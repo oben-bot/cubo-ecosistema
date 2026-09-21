@@ -188,18 +188,13 @@ Router de proveedores de IA **construido a medida**, pensado para **venderse**. 
 - **Ubicación:** vive en la PC del dueño (`Desktop\Hermes\`), **no está en Git**. Nunca deben subirse sus tokens; se importará al repo sin secretos.
 - Se queda en **Python** como servicio aparte; se le habla por HTTP.
 
-### 4.6 Hermes (asistente)
+### 4.6 Asistente de IA — conector genérico (Hermes fuera por ahora)
 
-Hermes Agent es un producto **de terceros** (Nous Research) que el dueño configura y opera. Corre en **WSL2** en segundo plano y usa la Wallet como su modelo principal. El documento técnico registra 7 bugs resueltos de visión y de red; queda pendiente probar la herramienta `vision_analyze` tras el último cambio. WSL2 en modo NAT cambia de IP en cada arranque; un arrancador ya lo compensa.
+**Decisión:** por ahora **no se integra ningún asistente concreto**. La Wallet y Hermes ya tienen su propia forma de trabajo y su propia app; se dejan funcionando como están, por su cuenta, sin meterse con Hermes.
 
-**Qué se quiere que haga:** responder, **ayudar a cotizar**, **buscar diseños específicos en la Biblioteca**, y **generar marketing y publicar** en Gumroad, redes sociales y WhatsApp.
+Lo que sí se construye es el **enchufe**: Cubo Manager expone un contrato local de herramientas (buscar diseño en la Biblioteca, cotizar, crear pedido, registrar venta, preparar publicación — detalle en `ARQUITECTURA.md` 3.6). Cualquier asistente que hable esa API estilo OpenAI puede llamarlas: la Wallet, una IA local (Ollama, LM Studio), un agente (OpenClaw u otro), o más adelante Hermes. Ninguno corre "por dentro" de Cubo Manager; todos entran por el mismo contrato, y las acciones que escriben o publican requieren **aprobación** del dueño.
 
-**Recomendación adoptada: Hermes independiente, enlazado a Cubo Manager por API, no incrustado.**
-- Es de terceros: revisar su licencia antes de incluirlo en algo que se venda. El ecosistema debe funcionar sin él.
-- Vive en WSL2 con IPs cambiantes; incrustarlo haría frágil a Cubo Manager.
-- Cubo Manager expone un **contrato local de herramientas** (buscar diseño, cotizar, crear pedido, registrar venta, preparar publicación). Hermes las llama; el asistente propio de Cubo Manager, apoyado en la Wallet, usa **las mismas herramientas**. Así el conector es intercambiable.
-- **Las acciones que escriben o publican** (crear pedido, enviar, publicar) requieren **aprobación** del dueño en Cubo Manager, al menos al inicio.
-- La publicación en Gumroad, redes y WhatsApp la ejecuta **n8n**, disparado desde Cubo Manager o Hermes.
+Esto no bloquea nada: la búsqueda en la Biblioteca, el Costeo, los pedidos y las ventas funcionan igual sin ningún asistente conectado. Cuando se quiera activar uno (Wallet, Hermes u otro), es cuestión de configuración, no de código nuevo.
 
 ### 4.7 n8n, pagos y mensajería
 
@@ -299,7 +294,7 @@ Hermes Agent es un producto **de terceros** (Nous Research) que el dueño config
 7. Constructores iniciales: nombres, cajas, llaveros; 3D después.
 8. Taller como app independiente dentro del entorno, con constructores propios/enlazados/embebidos y bandeja temporal.
 9. Página web y Catálogo se unen en un proyecto.
-10. Wallet como IA del ecosistema; Hermes independiente enlazado por API.
+10. Conector de asistente genérico (API estilo OpenAI); Hermes queda fuera del ecosistema por ahora, funcionando por su cuenta.
 11. Windows primero; venta única con actualizaciones de pago.
 12. Flujo de trabajo: arena.ai construye en `cubo-arena`; Claude ordena en `cubo-ecosistema`; bitácora actualizada por fase.
 
@@ -326,7 +321,7 @@ Hermes Agent es un producto **de terceros** (Nous Research) que el dueño config
 | **E4** | Taller v1: nombres, cajas, llaveros; bandeja | arena.ai | Un nombre pasa de constructor a Biblioteca sin pasos manuales; pieza real cortada |
 | **E5** | Catálogo + Web unidos; flujo del catálogo | arena.ai (con el flujo definido por el dueño) | Un producto pasa de la Biblioteca al catálogo público |
 | **E6** | Venta de archivos: n8n, cola de entregas, pagos | arena.ai | Una venta de prueba entrega el archivo con la PC encendida y avisa con la PC apagada |
-| **E7** | Asistente: contrato de herramientas, Wallet en Cubo Manager, Hermes enlazado, marketing | arena.ai | Hermes busca y cotiza; nada se publica sin aprobación |
+| **E7** | Contrato de herramientas del asistente; conectar un asistente de IA (Wallet, local u otro) si se decide; marketing | arena.ai | Un asistente conectado busca y cotiza; nada se publica sin aprobación |
 | **E8** | Producto: idiomas es/en/zh, licencias, actualizaciones, empaquetado Windows | arena.ai | Un instalador limpio en una PC nueva |
 
 **Paralelo (Wallet):** importar al repo sin secretos, validador de proveedores, llave maestra, empaquetado.

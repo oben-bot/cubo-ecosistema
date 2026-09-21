@@ -9,7 +9,7 @@ Los valores marcados como *propuesta* se pueden cambiar; lo que no se cambia sin
 2. **Nadie escribe en la base de datos de otro módulo.** Solo por API.
 3. Cubo Manager es el intermediario: Catálogo, Taller y Biblioteca no se hablan entre sí, salvo el paso Taller → Biblioteca al "guardar en producción".
 4. Todo lo configurable (puertos, rutas, marca, idioma, llaves) sale de un archivo de configuración; **nada escrito a mano** en el código (ni rutas de usuario, ni nombre del taller).
-5. Todo módulo arranca y funciona **sin** IA, sin n8n y sin Hermes.
+5. Todo módulo arranca y funciona **sin** IA, sin n8n y sin ningún conector de asistente.
 6. **Cero secretos y cero datos reales en Git.** Se usa `.env` (ignorado) y `.env.example` (versionado).
 7. Cada módulo tiene su propia base SQLite con migraciones versionadas, y expone `GET /salud` con su versión.
 8. Toda cadena visible al usuario usa **claves de traducción** (es, en, zh); no texto fijo.
@@ -24,7 +24,7 @@ Los valores marcados como *propuesta* se pueden cambiar; lo que no se cambia sin
 | Wallet (API Hub Pro) | Windows, servicio local | 8081 (existente) |
 | Catálogo + Web | Nube (Next.js) | — |
 | n8n | Nube | — |
-| Hermes | WSL2 (independiente) | el suyo |
+| Conector de asistente (opcional) | El suyo, fuera del ecosistema | el suyo |
 
 Autenticación local: cabecera `X-Cubo-Key` con una llave por instalación, generada al primer arranque.
 
@@ -104,7 +104,7 @@ El Catálogo guarda su estado publicado en el Drive del dueño (JSON), como hoy.
 
 ### 3.6 Herramientas del asistente (API local de Cubo Manager)
 
-Las usan **por igual** Hermes y el asistente propio (apoyado en la Wallet).
+Este es el único punto de contacto entre Cubo Manager y cualquier asistente de IA. **No se integra ningún asistente concreto por ahora** (ni Hermes ni otro): el contrato queda abierto para que, cuando se quiera, se enchufe cualquier IA compatible —local (Ollama, LM Studio), agentes (OpenClaw u otros) o la propia Wallet— sin tocar Cubo Manager. Cualquier conector debe limitarse a llamar estas herramientas; nada corre "por dentro" de Cubo Manager.
 
 | Herramienta | Escribe/publica | Aprobación |
 |---|---|---|
@@ -117,9 +117,9 @@ Las usan **por igual** Hermes y el asistente propio (apoyado en la Wallet).
 
 Transporte: HTTP local con esquema JSON. Nada de lo que escribe o publica se ejecuta sin la aprobación del dueño en la interfaz.
 
-### 3.7 IA (Wallet)
+### 3.7 IA (Wallet u otro conector)
 
-Se usa la API estilo OpenAI existente: `POST /v1/chat/completions`, `POST /v1/vision/analyze`, `GET /v1/llm/status`. Cualquier otro proveedor compatible con OpenAI puede sustituirla.
+La Biblioteca (sugerencia de categoría desde imagen) y cualquier herramienta de 3.6 que use IA hablan por la **API estilo OpenAI**: `POST /v1/chat/completions`, `POST /v1/vision/analyze`, `GET /v1/llm/status`. Hoy eso lo puede dar la Wallet, pero el contrato es genérico: cualquier servicio compatible con esa API (Ollama, LM Studio, un router propio, etc.) sirve igual, sin cambiar código. **Hermes queda fuera del ecosistema por ahora**; sigue funcionando por su cuenta con la Wallet como su cerebro, pero sin integrarse a Cubo Manager.
 
 ## 4. Configuración de marca y producto
 
@@ -129,4 +129,4 @@ Un archivo `marca.json` por instalación: nombre del negocio, logo, colores, idi
 
 - Almacén en línea para la cola de entregas (depende de dónde se aloje n8n).
 - Sistema de licencias/activación y canal de actualizaciones (fase E8).
-- Contrato con Hermes por fuera de las herramientas (API, línea de comandos o MCP).
+- Cuándo y con qué conector de IA se llenan las herramientas de 3.6 (Wallet, Ollama, un agente, u otro) — decisión aplazada, no bloquea las fases E1–E6.
