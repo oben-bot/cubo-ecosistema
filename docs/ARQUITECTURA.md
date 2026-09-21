@@ -44,7 +44,7 @@ Autenticación local: cabecera `X-Cubo-Key` con una llave por instalación, gene
   "medidas_mm": { "ancho": 100, "alto": 60, "profundidad": 80 },
   "material": "MDF 3 mm",
   "archivos": [{ "ruta_relativa": "cajas/act_000123/caja.svg", "formato": "svg", "sha256": "..." }],
-  "imagenes": [{ "ruta_relativa": "cajas/act_000123/preview.webp", "origen_imagen": "zip | web | captura | foto_terminado" }],
+  "imagenes": [{ "ruta_relativa": "cajas/act_000123/preview.webp", "origen_imagen": "subida | zip | web | captura | foto_terminado" }],
   "origen": "sitio o autor de donde vino",
   "licencia": "propia | comercial_ok | solo_personal | desconocida",
   "vendible_digital": false,
@@ -62,7 +62,7 @@ Autenticación local: cabecera `X-Cubo-Key` con una llave por instalación, gene
 |---|---|
 | `POST /activos` | Alta de archivo o ZIP (con imagen opcional); guarda todo o nada |
 | `POST /importar` | Importa una carpeta existente sin moverla; detecta duplicados por `sha256` |
-| `GET /activos?q=&tipo=&espacio=&categoria=` | Búsqueda por palabra clave o producto |
+| `GET /activos?q=&tipo=&espacio=&categoria=` | Búsqueda por palabra clave o producto (admite `limite`/`offset` para paginar) |
 | `GET /activos/:id` | Ficha completa |
 | `GET /activos/:id/archivo` | Descarga del archivo (solo lectura si es original) |
 | `POST /activos/:id/trabajo` | Crea una versión de **trabajo** enlazada al original |

@@ -1,0 +1,26 @@
+{
+  "name": "@cubo/biblioteca",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Biblioteca de activos del ecosistema Cubo: servicio local (127.0.0.1) que ordena y busca visualmente archivos de diseno (laser 2D, 3D, software, apps).",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.6.0"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node --disable-warning=ExperimentalWarning dist/index.js",
+    "dev": "node --disable-warning=ExperimentalWarning --watch src/index.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --disable-warning=ExperimentalWarning --test pruebas/*.test.ts"
+  },
+  "dependencies": {
+    "fflate": "0.8.3"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.2",
+    "typescript": "5.7.2"
+  }
+}

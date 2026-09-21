@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Biblioteca</title>
+    <link rel="stylesheet" href="/estilos.css" />
+  </head>
+  <body>
+    <header class="cabecera">
+      <div class="marca">
+        <span id="marca-nombre" class="marca-nombre">Biblioteca</span>
+        <span id="marca-subtitulo" class="marca-subtitulo" data-i18n="ui.subtitulo"></span>
+      </div>
+      <div class="acciones-cabecera">
+        <label class="campo-inline">
+          <span data-i18n="ui.idioma"></span>
+          <select id="selector-idioma">
+            <option value="es">es</option>
+            <option value="en">en</option>
+            <option value="zh">zh</option>
+          </select>
+        </label>
+        <button id="boton-alta" class="boton primario" data-i18n="ui.nueva_ficha"></button>
+        <button id="boton-importar" class="boton" data-i18n="ui.importar"></button>
+      </div>
+    </header>
+
+    <section class="filtros">
+      <input id="buscador" type="search" data-i18n-placeholder="ui.buscar" />
+      <select id="filtro-tipo"></select>
+      <select id="filtro-espacio"></select>
+      <select id="filtro-categoria"></select>
+      <select id="filtro-licencia"></select>
+      <label class="campo-inline"><input id="filtro-vendible" type="checkbox" /> <span data-i18n="ui.vendible"></span></label>
+      <button id="boton-buscar" class="boton" data-i18n="ui.buscar_accion"></button>
+      <button id="boton-limpiar" class="boton discreto" data-i18n="ui.limpiar"></button>
+    </section>
+
+    <p id="contador" class="contador"></p>
+
+    <main id="cuadricula" class="cuadricula"></main>
+
+    <aside id="panel-ficha" class="panel oculto" aria-hidden="true"></aside>
+
+    <dialog id="dialogo-alta" class="dialogo">
+      <form id="form-alta" method="dialog">
+        <h2 data-i18n="ui.alta.titulo"></h2>
+        <p class="ayuda" data-i18n="ui.alta.orden_preview"></p>
+        <label><span data-i18n="ui.nombre"></span><input name="nombre" type="text" maxlength="200" /></label>
+        <label><span data-i18n="ui.tipo"></span><select name="tipo"></select></label>
+        <label><span data-i18n="ui.categoria"></span><input name="categoria" type="text" maxlength="120" /></label>
+        <label><span data-i18n="ui.etiquetas"></span><input name="etiquetas" type="text" /></label>
+        <label><span data-i18n="ui.material"></span><input name="material" type="text" maxlength="120" /></label>
+        <div class="fila">
+          <label><span data-i18n="ui.ancho"></span><input name="ancho_mm" type="number" step="0.1" min="0" /></label>
+          <label><span data-i18n="ui.alto"></span><input name="alto_mm" type="number" step="0.1" min="0" /></label>
+          <label><span data-i18n="ui.profundidad"></span><input name="profundidad_mm" type="number" step="0.1" min="0" /></label>
+        </div>
+        <label><span data-i18n="ui.origen"></span> *<input name="origen" type="text" required maxlength="300" /></label>
+        <label><span data-i18n="ui.licencia"></span> *<select name="licencia" required></select></label>
+        <label class="campo-inline">
+          <input name="vendible_digital" type="checkbox" value="1" />
+          <span data-i18n="ui.vendible_digital"></span>
+        </label>
+        <p class="ayuda" data-i18n="ui.alta.obligatorios"></p>
+        <label><span data-i18n="ui.alta.archivos"></span><input name="archivos" type="file" multiple /></label>
+        <label><span data-i18n="ui.alta.imagen"></span><input name="imagen" type="file" accept="image/*" /></label>
+        <p class="ayuda deshabilitado">
+          <span data-i18n="ui.alta.web_imagen"></span>: <span data-i18n="ui.alta.web_imagen_no_disponible"></span>
+        </p>
+        <div class="fila derecha">
+          <button type="button" class="boton discreto" data-cerrar="dialogo-alta" data-i18n="ui.cerrar"></button>
+          <button type="submit" class="boton primario" data-i18n="ui.alta.enviar"></button>
+        </div>
+        <p id="resultado-alta" class="aviso"></p>
+      </form>
+    </dialog>
+
+    <dialog id="dialogo-importar" class="dialogo">
+      <form id="form-importar" method="dialog">
+        <h2 data-i18n="ui.importar.titulo"></h2>
+        <p class="ayuda" data-i18n="ui.importar.aviso"></p>
+        <label><span data-i18n="ui.importar.ruta"></span><input name="ruta" type="text" required /></label>
+        <label><span data-i18n="ui.categoria"></span><input name="categoria" type="text" /></label>
+        <label><span data-i18n="ui.licencia"></span><select name="licencia"></select></label>
+        <label><span data-i18n="ui.origen"></span><input name="origen" type="text" /></label>
+        <div class="fila derecha">
+          <button type="button" class="boton discreto" data-cerrar="dialogo-importar" data-i18n="ui.cerrar"></button>
+          <button type="submit" class="boton primario" data-i18n="ui.importar.ejecutar"></button>
+        </div>
+        <div id="resultado-importar" class="informe"></div>
+      </form>
+    </dialog>
+
+    <footer class="pie"><span data-i18n="ui.pie"></span> · <span id="pie-version"></span></footer>
+    <script src="/app.js"></script>
+  </body>
+</html>

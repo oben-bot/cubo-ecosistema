@@ -1,0 +1,11 @@
+{
+  "nombre": "Taller",
+  "logo": null,
+  "colores": {
+    "primario": "#8b5e34",
+    "fondo": "#f7f4ef",
+    "texto": "#2b2118"
+  },
+  "idioma": "es",
+  "enlaces": {}
+}
