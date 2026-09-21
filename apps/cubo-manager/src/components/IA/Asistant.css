@@ -1,0 +1,192 @@
+.assistant-fab {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  background: #39ff14;
+  color: #222;
+  border: none;
+  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+  font-size: 2.5rem;
+  box-shadow: 0 4px 18px #0004;
+  cursor: pointer;
+  z-index: 3000;
+  transition: background 0.2s;
+}
+.assistant-fab:hover {
+  background: #00bfff;
+  color: #fff;
+}
+
+/* Tamaño más grande y movible para el asistente */
+.assistant-container {
+  position: fixed;
+  /* bottom y right se manejan dinámicamente por JS, así que los quitamos aquí */
+  /* bottom: 32px; */
+  /* right: 32px; */
+  left: 32px;
+  top: 32px;
+  width: 520px;
+  height: 600px;
+  z-index: 3000;
+  background: #181c24;
+  border: 2px solid #39ff14;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px #0008;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  resize: both;
+  min-width: 320px;
+  min-height: 280px;
+  max-width: 98vw;
+  max-height: 90vh;
+  /* Permitir transición suave al mover */
+  transition: box-shadow 0.2s, border 0.2s;
+}
+
+.assistant-resize-handle {
+  user-select: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  background: transparent;
+}
+.assistant-resize-handle span {
+  pointer-events: none;
+  color: #39ff14;
+  font-weight: bold;
+}
+/* Handles de borde/corner más visibles */
+.assistant-resize-handle {
+  background: #39ff1422 !important;
+  border-radius: 4px;
+  border: 1px solid #39ff14;
+}
+.assistant-resize-handle[style*='width: 12px'],
+.assistant-resize-handle[style*='height: 12px'] {
+  background: #39ff1422;
+  border-radius: 4px;
+}
+.assistant-resize-handle[style*='width: 18px'][style*='height: 18px'] {
+  background: #39ff1433;
+  border-radius: 50%;
+}
+
+.assistant-header {
+  background: #39ff14;
+  color: #222;
+  font-weight: bold;
+  padding: 14px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.2rem;
+  cursor: move;           /* Indica que se puede mover */
+  user-select: none;
+  border-bottom: 2px solid #39ff14;
+}
+
+.assistant-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #222;
+  cursor: pointer;
+}
+
+.messages {
+  flex: 1;
+  padding: 18px;
+  overflow-y: auto;
+  background: #23272f;
+  min-height: 180px;
+  max-height: none;
+  font-size: 1.25rem;     /* Letras más grandes */
+}
+
+.message {
+  margin-bottom: 12px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  max-width: 85%;
+  word-break: break-word;
+  font-size: 1.1rem;
+}
+
+.message.ia {
+  background: #222;
+  color: #39ff14;
+  align-self: flex-start;
+}
+
+.message.user {
+  background: #39ff14;
+  color: #222;
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+.input-area {
+  display: flex;
+  padding: 12px;
+  background: #23272f;
+  border-top: 1px solid #39ff14;
+}
+
+.input-area input {
+  flex: 1;
+  padding: 14px 18px;
+  border-radius: 8px;
+  border: 1px solid #39ff14;
+  font-size: 1.2rem;
+  margin-right: 8px;
+  background: #181a20;
+  color: #fff;
+}
+
+.input-area button {
+  background: #39ff14;
+  color: #222;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 24px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.input-area button:hover {
+  background: #00bfff;
+  color: #fff;
+}
+
+.assistant-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 10px;
+  padding: 12px 10px 0 10px;
+  background: #181a20;
+}
+
+.ia-action-btn {
+  background: #00bfff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 22px;
+  font-size: 1.15rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #0002;
+  transition: background 0.2s, color 0.2s;
+  margin-bottom: 8px;
+}
+
+.ia-action-btn:hover {
+  background: #39ff14;
+  color: #222;
+}

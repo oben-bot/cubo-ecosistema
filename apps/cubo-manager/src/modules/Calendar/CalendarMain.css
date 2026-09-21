@@ -1,0 +1,74 @@
+.calendar-container {
+  padding: 20px;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.calendar-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.calendar-header-mes {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.calendario-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: var(--border-color);
+  border: 1px solid var(--border-color);
+  gap: 1px;
+}
+
+.calendario-dia-header {
+  background: var(--header-bg);
+  padding: 10px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.calendario-dia {
+  background: var(--card-bg);
+  min-height: 100px;
+  padding: 5px;
+}
+
+.dia-numero {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.dia-eventos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 5px;
+}
+
+.dia-evento {
+  font-size: 10px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  color: white;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.evento-item {
+  background: var(--card-bg);
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid;
+  margin-bottom: 10px;
+}

@@ -1,0 +1,18 @@
+node_modules/
+build/
+dist/
+.next/
+*.db
+*.db-wal
+*.db-shm
+.env
+.env.*
+!.env.example
+*.bak
+*.msi
+desktop.ini
+.DS_Store
+# Wallet: nunca versionar llaves ni tokens
+services/wallet/**/*.key
+services/wallet/**/tokens*
+services/wallet/**/config.local*

@@ -1,0 +1,79 @@
+.welcome-screen {
+  background-image: url('../assets/fire-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  animation: backgroundMove 10s infinite alternate;
+}
+ 
+@keyframes backgroundMove {
+  0% {
+    background-position: center;
+  }
+  100% {
+    background-position: center 20px;
+  }
+}
+.welcome-title {
+  font-size: 10rem;
+  font-family: 'Pristina';
+  font-weight: bold;
+  margin-bottom: 30px;
+  color: #fff;
+  text-align: center;
+}
+
+.welcome-subtitle {
+  font-size: 7rem;
+  font-family: 'Pristina';
+  margin-bottom: 35px;
+  color: #fafafa;
+  text-align: center;
+} 
+/* Agranda el recuadro */
+.welcome-content {
+  text-align: center;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 60px 60px; /* Más padding */
+  border-radius: 50px;
+  min-width: 500px;   /* Más ancho mínimo */
+}
+
+/* Input de contraseña grande y alineado */
+.welcome-content input[type="password"] {
+  width: 100%;
+  font-size: 28px;
+  padding: 15px 30px;
+  border-radius: 50px;
+  border: none;
+  margin-bottom: 30px;
+  text-align: center;
+  box-sizing: border-box;
+  background-color: #fff; 
+  color: #000;
+  outline: none;
+}
+
+/* Botón igual de ancho y alto que el input */
+.start-button {
+  width: 100%;
+  background-color: #ff4b2b;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  font-size: 28px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  margin-bottom: 10px;
+}
+.start-button:hover {
+  transform: scale(1.1);
+  background-color: #ff3a1a;
+}

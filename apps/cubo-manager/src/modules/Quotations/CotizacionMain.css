@@ -1,0 +1,88 @@
+.cotizaciones-bg {
+    min-height: 100vh;
+    min-width: 100vw;
+    position: relative;
+    padding-bottom: 120px;
+    background: #23272f;
+  }
+  
+  .cotizaciones-menu-horizontal {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin: 50px 0 30px 0;
+    flex-wrap: wrap;
+  }
+  
+  .cotizaciones-menu-btn {
+    background: #be3131;
+    color: #111;
+    border: none;
+    border-radius: 14px;
+    padding: 28px 48px;
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 18px #0002;
+    transition: filter 0.2s, transform 0.2s, background 0.2s, color 0.2s;
+  }
+  
+  .cotizaciones-menu-btn.active,
+  .cotizaciones-menu-btn:hover {
+    background: #39ff14;
+    color: #111;
+    filter: brightness(1.1) drop-shadow(0 0 10px #39ff14);
+    transform: scale(1.07);
+  }
+  
+  .cotizaciones-seccion-panel {
+    background: rgba(30,30,30,0.97);
+    border-radius: 18px;
+    width: 96vw;
+    min-height: 80vh;
+    margin: 2vw auto 40px auto;
+    padding: 48px 4vw 48px 4vw;
+    box-shadow: 0 0 24px #39ff1440;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  
+  /* Agranda los títulos */
+  .cotizaciones-seccion-panel h1,
+  .cotizaciones-seccion-panel h2 {
+    font-size: 3rem;
+    color: #39ff14;
+    margin-bottom: 32px;
+  }
+  
+  /* Agranda los labels y campos de texto */
+  .cotizaciones-seccion-panel label,
+  .cotizaciones-seccion-panel input,
+  .cotizaciones-seccion-panel select,
+  .cotizaciones-seccion-panel textarea {
+    font-size: 1.5rem;
+  }
+  
+  /* Agranda los botones dentro del panel */
+  .cotizaciones-seccion-panel button {
+    font-size: 1.4rem;
+    padding: 18px 50px;
+  }
+  
+  .volver-dashboard-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 40px;      /* Cambiado de right a left */
+    background: #39ff14;
+    color: #222;
+    border: none;
+    border-radius: 14px;
+    padding: 22px 50px;
+    font-size: 2rem;
+    cursor: pointer;
+    font-weight: bold;
+    z-index: 200;
+  }

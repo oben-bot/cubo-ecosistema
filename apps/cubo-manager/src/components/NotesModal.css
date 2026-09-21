@@ -1,0 +1,103 @@
+.notes-modal-bg {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .notes-modal {
+    background: #fff;
+    border-radius: 30px;
+    padding: 40px 40px;
+    min-width: 400px;
+    box-shadow: 0 0 40px var(--main-color, #39ff14);
+    text-align: center;
+  }
+  
+  /* Agranda el modal y el textarea */
+  .notes-modal.large {
+    min-width: 1500px;
+    max-width: 900px;
+    padding: 100px 70px;
+  }
+  
+  .notes-modal h2 {
+    margin-bottom: 200px;
+    color: #222;
+  }
+  
+  .notes-modal textarea {
+    width: 90%;
+    height: 70px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-size: 2rem;
+    resize: vertical;
+  }
+  
+  .big-textarea {
+    width: 98%;
+    height: 160px;
+    font-size: 1.4rem;
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 18px;
+    border: 1.5px solid #ccc;
+    resize: vertical;
+  }
+  
+  .notes-modal input[type="datetime-local"] {
+    margin-left: 10px;
+    padding: 5px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+  
+  .notes-modal button {
+    margin: 10px 5px 0 5px;
+    background: var(--main-color, #39ff14);
+    color: #222;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 22px;
+    font-size: 2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .notes-modal button:hover {
+    background: #222;
+    color: var(--main-color, #39ff14);
+  }
+  
+  .notes-list {
+    margin-top: 20px;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  .note-item {
+    background: #f5f5f5;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    text-align: left;
+    position: relative;
+  }
+  
+  .big-note {
+    font-size:1.3rem;
+    padding: 18px 12px;
+  }
+  
+  .note-reminder {
+    font-size: 0.9rem;
+    color: #888;
+    margin-top: 5px;
+  }

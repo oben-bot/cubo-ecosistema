@@ -1,0 +1,95 @@
+.calendar-widget-modal {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff6f0;
+  border-radius: 16px;
+  box-shadow: 0 2px 24px rgba(0,0,0,0.18);
+  padding: 2rem;
+  z-index: 2000;
+  min-width: 400px;
+  min-height: 400px;
+  max-width: 95vw;
+  max-height: 95vh;
+  color: #222;
+  border: 3px solid #b71c1c;
+  overflow: auto;
+}
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.2em;
+  margin-bottom: 1em;
+  color: #b71c1c;
+  background: #fff0e6;
+  border-radius: 8px;
+  padding: 0.5em 1em;
+  user-select: none;
+}
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5em;
+  margin-bottom: 1em;
+}
+.calendar-day {
+  background: #fff;
+  border-radius: 8px;
+  min-height: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  cursor: pointer;
+  position: relative;
+  padding: 0.3em 0.1em;
+  border: 1.5px solid #b71c1c33;
+  transition: background 0.2s, border 0.2s;
+}
+.calendar-today {
+  background: #ffe0b2 !important;
+  border: 2px solid #b71c1c !important;
+}
+.calendar-day span {
+  font-size: 1.1em;
+  color: #222;
+}
+.calendar-markers {
+  display: flex;
+  gap: 2px;
+  margin-top: 2px;
+}
+.calendar-marker {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: inline-block;
+  border: 2px solid #fff6f0;
+}
+.calendar-add-btn, .calendar-menu-btn, .calendar-close-btn {
+  margin-top: 1em;
+  background: #b71c1c;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6em 1.5em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-right: 0.5em;
+}
+.calendar-add-btn:hover, .calendar-menu-btn:hover, .calendar-close-btn:hover {
+  background: #d32f2f;
+}
+.calendar-resize-handle {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 32px;
+  height: 32px;
+  cursor: se-resize;
+  background: url('data:image/svg+xml;utf8,<svg width="32" height="32" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="32" x2="32" y2="0" stroke="%23b71c1c" stroke-width="3"/></svg>') no-repeat center center;
+}

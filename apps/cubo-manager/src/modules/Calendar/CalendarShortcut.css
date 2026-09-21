@@ -1,0 +1,22 @@
+.calendar-shortcut-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: fixed;
+  right: 2.5rem;
+  top: 50%;
+  transform: translateY(50%);
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(10,0,0,0.10);
+  border-radius: -50%;
+  padding: 0.5em;
+  transition: background 0.2s;
+}
+.calendar-shortcut-btn:hover {
+  background: #ffeaea;
+}
+.calendar-shortcut-icon {
+  width: 6.6em;
+  height: 6.6em;
+  fill: #b71c1c;
+}

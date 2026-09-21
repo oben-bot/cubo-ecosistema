@@ -1,0 +1,86 @@
+/* === COVER IMAGE UPLOADER STYLES === */
+.cover-uploader {
+  position: relative;
+  border: 2px dashed;
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.3s ease;
+}
+
+.cover-uploader:hover {
+  background: rgba(226, 232, 240, 0.05);
+}
+
+.cover-uploader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.cover-preview {
+  width: 100%;
+  max-width: 400px;
+  height: 240px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.cover-placeholder {
+  width: 100%;
+  height: 180px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.cover-icon {
+  font-size: 48px;
+}
+
+.cover-placeholder p {
+  margin: 0;
+  color: rgba(226, 232, 240, 0.6);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.cover-upload-btn,
+.cover-action-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cover-upload-btn:hover:not(:disabled),
+.cover-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(34, 211, 238, 0.3);
+}
+
+.cover-upload-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cover-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.cover-action-btn {
+  flex: 1;
+  min-width: 140px;
+}

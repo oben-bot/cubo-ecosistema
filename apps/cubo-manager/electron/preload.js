@@ -1,0 +1,108 @@
+const { contextBridge, ipcRenderer } = require('electron');
+
+// Exponer API segura al frontend
+contextBridge.exposeInMainWorld('electron', {
+  // Base de datos
+  database: {
+    query: (sql, params) => ipcRenderer.invoke('database:query', sql, params),
+    run: (sql, params) => ipcRenderer.invoke('database:run', sql, params),
+    get: (sql, params) => ipcRenderer.invoke('database:get', sql, params)
+  },
+  // Sistema de archivos
+  fs: {
+    readFile: (path) => ipcRenderer.invoke('fs:readFile', path),
+    writeFile: (path, data) => ipcRenderer.invoke('fs:writeFile', path, data),
+    readDir: (path) => ipcRenderer.invoke('fs:readDir', path)
+  },
+  // Configuración
+  config: {
+    get: (key) => ipcRenderer.invoke('config:get', key),
+    set: (key, value) => ipcRenderer.invoke('config:set', key, value)
+  },
+  // Inventario
+  inventario: {
+    getAll: () => ipcRenderer.invoke('inventario:getAll'),
+    getById: (id) => ipcRenderer.invoke('inventario:getById', id),
+    create: (producto) => ipcRenderer.invoke('inventario:create', producto),
+    update: (id, producto) => ipcRenderer.invoke('inventario:update', id, producto),
+    delete: (id) => ipcRenderer.invoke('inventario:delete', id),
+    registrarMovimiento: (movimiento) => ipcRenderer.invoke('inventario:registrarMovimiento', movimiento),
+    getMovimientos: (productoId) => ipcRenderer.invoke('inventario:getMovimientos', productoId),
+    getAlertasStock: () => ipcRenderer.invoke('inventario:getAlertasStock')
+  },
+  // Cotizaciones
+  cotizaciones: {
+    getAll: () => ipcRenderer.invoke('cotizaciones:getAll'),
+    getById: (id) => ipcRenderer.invoke('cotizaciones:getById', id),
+    create: (cotizacion) => ipcRenderer.invoke('cotizaciones:create', cotizacion),
+    update: (id, cotizacion) => ipcRenderer.invoke('cotizaciones:update', id, cotizacion),
+    changeStatus: (id, estado) => ipcRenderer.invoke('cotizaciones:changeStatus', id, estado),
+    delete: (id) => ipcRenderer.invoke('cotizaciones:delete', id),
+    getProductosDisponibles: () => ipcRenderer.invoke('cotizaciones:getProductosDisponibles')
+  },
+  // Producción
+  trabajos: {
+    getAll: () => ipcRenderer.invoke('trabajos:getAll'),
+    getByEstado: (estado) => ipcRenderer.invoke('trabajos:getByEstado', estado),
+    getById: (id) => ipcRenderer.invoke('trabajos:getById', id),
+    crearDesdeCotizacion: (cotizacionId) => ipcRenderer.invoke('trabajos:crearDesdeCotizacion', cotizacionId),
+    create: (trabajo) => ipcRenderer.invoke('trabajos:create', trabajo),
+    update: (id, trabajo) => ipcRenderer.invoke('trabajos:update', id, trabajo),
+    changeStatus: (id, estado) => ipcRenderer.invoke('trabajos:changeStatus', id, estado),
+    addEvidencia: (trabajoId, archivoPath, descripcion) => ipcRenderer.invoke('trabajos:addEvidencia', trabajoId, archivoPath, descripcion),
+    deleteEvidencia: (id) => ipcRenderer.invoke('trabajos:deleteEvidencia', id),
+    addActividad: (trabajoId, actividad, duracion) => ipcRenderer.invoke('trabajos:addActividad', trabajoId, actividad, duracion),
+    delete: (id) => ipcRenderer.invoke('trabajos:delete', id),
+    getCotizacionesAprobadas: () => ipcRenderer.invoke('trabajos:getCotizacionesAprobadas')
+  },
+  // Ventas
+  ventas: {
+    getAll: () => ipcRenderer.invoke('ventas:getAll'),
+    getById: (id) => ipcRenderer.invoke('ventas:getById', id),
+    crearDesdeTrabajo: (trabajoId, metodo_pago) => ipcRenderer.invoke('ventas:crearDesdeTrabajo', trabajoId, metodo_pago),
+    create: (venta) => ipcRenderer.invoke('ventas:create', venta),
+    delete: (id) => ipcRenderer.invoke('ventas:delete', id)
+  },
+  // Finanzas
+  finanzas: {
+    getAll: () => ipcRenderer.invoke('finanzas:getAll'),
+    registrarEgreso: (egreso) => ipcRenderer.invoke('finanzas:registrarEgreso', egreso),
+    getResumen: (periodo) => ipcRenderer.invoke('finanzas:getResumen', periodo),
+    getTrabajosTerminados: () => ipcRenderer.invoke('finanzas:getTrabajosTerminados')
+  },
+  // Calendario
+  calendario: {
+    getEventos: (fechaInicio, fechaFin) => ipcRenderer.invoke('calendario:getEventos', fechaInicio, fechaFin),
+    getAll: () => ipcRenderer.invoke('calendario:getAll'),
+    create: (evento) => ipcRenderer.invoke('calendario:create', evento),
+    update: (id, evento) => ipcRenderer.invoke('calendario:update', id, evento),
+    delete: (id) => ipcRenderer.invoke('calendario:delete', id),
+    syncTrabajos: () => ipcRenderer.invoke('calendario:syncTrabajos'),
+    getEventosHoy: () => ipcRenderer.invoke('calendario:getEventosHoy')
+  },
+  // Marketing
+  marketing: {
+    getConfig: (plataforma) => ipcRenderer.invoke('marketing:getConfig', plataforma),
+    saveConfig: (plataforma, configuracion, activo) => ipcRenderer.invoke('marketing:saveConfig', plataforma, configuracion, activo),
+    exportToWordPress: (productoId) => ipcRenderer.invoke('marketing:exportToWordPress', productoId),
+    exportCatalogo: (categoria) => ipcRenderer.invoke('marketing:exportCatalogo', categoria),
+    sendWhatsApp: (cotizacionId, numeroTelefono) => ipcRenderer.invoke('marketing:sendWhatsApp', cotizacionId, numeroTelefono),
+    syncGumroad: () => ipcRenderer.invoke('marketing:syncGumroad'),
+    getExportaciones: (limit) => ipcRenderer.invoke('marketing:getExportaciones', limit)
+  },
+  // Biblioteca Laser (Mini-App externa)
+  biblioteca: {
+    getStatus: () => ipcRenderer.invoke('biblioteca:getStatus'),
+    start: () => ipcRenderer.invoke('biblioteca:start'),
+    getDisenos: (categoria) => ipcRenderer.invoke('biblioteca:getDisenos', categoria),
+    getDisenoById: (id) => ipcRenderer.invoke('biblioteca:getDisenoById', id),
+    copiarDiseno: (disenoId, trabajoId) => ipcRenderer.invoke('biblioteca:copiarDiseno', disenoId, trabajoId),
+    syncProductos: () => ipcRenderer.invoke('biblioteca:syncProductos')
+  },
+  // Ventana
+  window: {
+    close: () => ipcRenderer.send('window:close'),
+    minimize: () => ipcRenderer.send('window:minimize'),
+    maximize: () => ipcRenderer.send('window:maximize')
+  }
+});

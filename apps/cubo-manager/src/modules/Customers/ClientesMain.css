@@ -1,0 +1,139 @@
+.clientes-main-container {
+    background: rgba(30,30,30,0.93);
+    border-radius: 24px;
+    padding: 40px 30px;
+    max-width: 1300px;
+    margin: 0 auto;
+    box-shadow: 0 0 40px #39ff14;
+    text-align: center;
+  }
+  
+  .clientes-title {
+    color: #39ff14;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+  }
+  
+  .almacen-menu-botones {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+  
+  .flecha-css-btn {
+    position: relative;
+    width: 95vw;
+    max-width: 700px;
+    height: 110px;
+    background: #232526;
+    color: #39ff14;
+    font-size: 2.7rem;
+    font-weight: bold;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    text-align: left;
+    padding-left: 70px;
+    padding-right: 60px;
+    box-shadow: 0 4px 18px #0008;
+    border-radius: 12px;
+    transition: filter 0.2s, transform 0.2s;
+    overflow: visible;
+    margin-bottom: 10px;
+    z-index: 1;
+  }
+  .flecha-css-btn::after {
+    content: '';
+    position: absolute;
+    right: -55px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 55px solid transparent;
+    border-bottom: 55px solid transparent;
+    border-left: 55px solid #232526;
+    z-index: 2;
+  }
+  .flecha-css-btn::before {
+    content: '';
+    position: absolute;
+    left: -40px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 55px solid transparent;
+    border-bottom: 55px solid transparent;
+    border-right: 40px solid #232526;
+    z-index: 2;
+  }
+  .flecha-css-btn:hover {
+    filter: brightness(1.2) drop-shadow(0 0 10px #39ff14);
+    transform: scale(1.03);
+  }
+  
+  .volver-btn, .volver-dashboard-btn {
+    margin-top: 30px;
+    background: #39ff14;
+    color: #222;
+    border: none;
+    border-radius: 12px;
+    padding: 18px 40px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-right: 15px;
+  }
+  
+  .input-cliente {
+    margin: 0 20px 20px 0;
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid #39ff14;
+    background: #181818;
+    color: #39ff14;
+    font-size: 2rem;
+  }
+  
+  .btn-registrar, .btn-accion {
+    background: #39ff14;
+    color: #222;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: 1rem;
+    margin-left: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 8px;
+  }
+  
+  .lista-clientes {
+    list-style: none;
+    padding: 0;
+    margin-top: 16px;
+  }
+  
+  .lista-clientes li {
+    background: #232526;
+    color: #fff;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    padding: 30px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .btn-eliminar {
+    background: #ff3939;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-left: 12px;
+  }

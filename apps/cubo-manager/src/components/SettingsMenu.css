@@ -1,0 +1,82 @@
+.settings-menu-bg {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .settings-menu {
+    background: #fff;
+    border-radius: 30px;
+    padding: 40px 60px;
+    min-width: 400px;
+    box-shadow: 0 0 40px var(--main-color, #39ff14);
+    text-align: center;
+  }
+  
+  .settings-menu h2 {
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+    color: #222;
+  }
+  
+  .settings-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 30px 0;
+  }
+  
+  .settings-menu li {
+    font-size: 1.5rem;
+    margin: 18px 0;
+    color: #222;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  
+  .settings-menu li:hover {
+    color: var(--main-color, #39ff14);
+  }
+  
+  .settings-menu input,
+  .settings-menu select {
+    display: block;
+    margin: 15px auto;
+    padding: 10px 18px;
+    font-size: 1.1rem;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    width: 80%;
+  }
+  
+  .settings-menu button {
+    margin-top: 18px;
+  }
+  
+  .close-settings, .back-settings {
+    background: var(--main-color, #39ff14);
+    color: #222;
+    border: none;
+    border-radius: 18px;
+    padding: 12px 32px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin: 10px 8px 0 8px;
+  }
+  
+  .close-settings:hover, .back-settings:hover {
+    background: #222;
+    color: var(--main-color, #39ff14);
+  }
+  
+  .settings-menu img {
+    display: block;
+    margin: 10px auto;
+    border-radius: 50%;
+    border: 2px solid var(--main-color, #39ff14);
+  }

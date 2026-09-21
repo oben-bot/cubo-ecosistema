@@ -1,0 +1,61 @@
+graph TD
+    subgraph "Capa de Escritorio (Electron)"
+        E_Main[main.js: Proceso Principal]
+        E_Preload[preload.js: Puente IPC]
+        E_Config[builder.config.js]
+    end
+
+    subgraph "Capa de Presentación (React)"
+        R_App[App.jsx / Main.jsx]
+        R_Context[context/: Estado Global]
+        
+        subgraph "Módulos de Negocio"
+            M_Dash[Dashboard]
+            M_Prod[Production]
+            M_Ware[Warehouse]
+            M_Cust[Customers]
+            M_Quot[Quotations]
+            M_Fin[Finance]
+            M_Cal[Calendar]
+            M_Lib[Library]
+            M_Mark[Marketing]
+        end
+        
+        subgraph "Componentes y UI"
+            C_Core[Core UI]
+            C_IA[Assistant.js]
+            C_Layout[Layout]
+            C_Assets[Assets: Styles/Images]
+        end
+    end
+
+    subgraph "Núcleo Funcional (Core)"
+        Core_DB[database.js: SQLite Logic]
+        Core_FS[fileSystem.js: File Ops]
+        Core_IPC[ipcHandlers.js: Communication]
+    end
+
+    subgraph "Persistencia Local"
+        DB_File[(data/cubo_manager.db)]
+        Storage_Dir[[storage/: Archivos Físicos]]
+    end
+
+    %% Conexiones
+    E_Main <--> E_Preload
+    E_Preload <--> R_App
+    R_App --> M_Dash
+    R_App --> R_Context
+    
+    M_Prod & M_Ware & M_Cust & M_Fin --> Core_DB
+    M_Lib & M_Prod --> Core_FS
+    
+    Core_DB <--> DB_File
+    Core_FS <--> Storage_Dir
+    
+    C_IA <--> Core_IPC
+    Core_IPC <--> E_Main
+
+    style E_Main fill:#f9f,stroke:#333,stroke-width:2px
+    style DB_File fill:#00ff00,stroke:#333,stroke-width:2px
+    style Storage_Dir fill:#00ff00,stroke:#333,stroke-width:2px
+    style C_IA fill:#00ffff,stroke:#333,stroke-width:2px
