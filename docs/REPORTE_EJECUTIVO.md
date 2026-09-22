@@ -1,8 +1,38 @@
 # Reporte ejecutivo — Ecosistema "El Cubo de Madera"
 
-**Versión:** 1.0 · **Fecha:** 21 de septiembre de 2026
+**Versión:** 1.1 · **Fecha:** 21 de septiembre de 2026
 **Naturaleza:** documento vivo. Se actualiza al cerrar cada fase; el registro cronológico está en `BITACORA.md`.
 **Fuentes:** carpeta de Google Drive "Pagina,Catalogo,biblioteca" (fichas técnicas), plan maestro del Taller Paramétrico, documento "Hermes LAB + Wallet", revisión directa de los repositorios de GitHub de la cuenta `oben-bot`, y las decisiones tomadas en conversación con el dueño del proyecto.
+
+---
+
+## 0. Resumen para quien retome esto (persona o IA)
+
+Léelo aunque no leas nada más del documento; con esto solo ya puedes seguir el hilo.
+
+**Qué es.** Un ecosistema de software para un taller de corte láser/3D ("El Cubo de Madera"): app de escritorio central (Cubo Manager), biblioteca de diseños, taller de constructores paramétricos, catálogo+web de venta, y un router de IA propio (Wallet). Doble objetivo: operar el taller real **y** venderlo como producto (cascarón) a otros talleres. Detalle completo en las secciones 1 a 8 de este documento.
+
+**Dónde vive el código.**
+- `github.com/oben-bot/cubo-ecosistema` — repo **principal**, privado. Aquí es donde queda todo ya revisado y ordenado. Estructura: `apps/cubo-manager`, `apps/catalogo-web`, `apps/biblioteca` (nuevo), `apps/taller` (vacío aún), `services/wallet` (vacío aún, pendiente de importar), `docs/` (este reporte, `ARQUITECTURA.md` con los contratos entre módulos, `BITACORA.md` con el historial fase por fase, `DEUDA_TECNICA.md`, `docs/fases/` con los briefs).
+- `github.com/oben-bot/cubo-arena` — repo de trabajo para **arena.ai**. Ahí construye cada fase en una rama y abre un PR; Claude lo revisa, lo prueba de verdad (no solo lee el reporte de arena.ai) y lo traslada a `cubo-ecosistema`.
+- `github.com/oben-bot/app-cubo-madera` y `github.com/oben-bot/oben-bot` — repos **antiguos**, públicos, de donde salieron las copias iniciales de Cubo Manager y el Catálogo. Ya no se tocan; siguen ahí de respaldo hasta decidir qué hacer con ellos.
+- Reglas obligatorias para cualquiera que programe en el repo: `AGENTS.md` (en la raíz de `cubo-ecosistema` y copiado a `cubo-arena`).
+
+**Cómo se trabaja.** Un frente a la vez. Cada fase tiene un brief en `docs/fases/FASE_EX_....md` con alcance, lo que queda fuera, y criterios de aceptación verificables. arena.ai construye en `cubo-arena`; Claude revisa el PR, **lo ejecuta y lo prueba él mismo** (no confía solo en las notas de entrega), lo funde, lo traslada a `cubo-ecosistema` y cierra la fase en `BITACORA.md`.
+
+**Estado ahora mismo (21 de septiembre de 2026, tarde):**
+- ✅ **E0 — Orden:** hecho. Repos creados, estructura, documentos base.
+- ✅ **E1 — Biblioteca v1:** hecho y verificado. Servicio Node/TypeScript + SQLite en `apps/biblioteca` que ordena diseños (originales de solo lectura vs. trabajos personalizados), con búsqueda visual, importación masiva con detección de duplicados, y la regla de que solo se puede vender un archivo en digital si su licencia es propia o comercial. 41 pruebas automáticas, y Claude además la corrió a mano y confirmó los casos límite.
+- 🔜 **E2 — Cubo Manager: verificar y conectar a la Biblioteca real** (brief: `docs/fases/FASE_E2_CUBO_MANAGER.md`). En curso, con dos frentes en paralelo:
+  - **arena.ai** construye en `cubo-arena` lo que no depende de ejecutar la app (conectar el puente de la Biblioteca, cifrar contraseñas, quitar la recuperación por correo simulada, endurecer los canales IPC).
+  - **El dueño** corre Cubo Manager en su propia PC (Windows) para confirmar cuál de los módulos duplicados `.js`/`.jsx` se está cargando en la práctica (Finanzas, Biblioteca, Producción, Cotizaciones, Almacén) y reporta qué ve.
+- **Pendientes de más adelante (no bloquean E2):** Costeo con pantalla (E3), Taller (E4), Catálogo+Web unidos y su flujo de venta (E5), venta de archivos digitales con n8n (E6), asistente de IA conectado (E7 — **decidido dejar fuera a Hermes por ahora**; el contrato queda genérico para enchufar la Wallet, Ollama u otro), empaquetado para vender el ecosistema (E8). Detalle: sección 10 y `BITACORA.md`.
+
+**Decisiones ya tomadas que no hay que volver a discutir:** ver sección 9. Las más relevantes para retomar el hilo: la Biblioteca anterior del dueño se descartó y se construyó desde cero (E1, ya lista); Wallet y Hermes siguen funcionando por su cuenta, sin integrarse todavía; el modelo de venta es cascarón, Windows primero, venta única con actualizaciones de pago.
+
+**Preguntas todavía sin responder** (no urgentes, no bloquean lo que sigue): dónde correr n8n en concreto, el flujo detallado del catálogo, el alcance inicial del 3D, y cómo se le habla a Hermes por fuera cuando se decida integrarlo.
+
+**Con quién se coordina.** El dueño del proyecto opera todo desde una cuenta de GitHub (`oben-bot`) y una PC con Windows (con WSL2 para Hermes, aparte del ecosistema). Los repos nuevos son privados. Cualquier token de GitHub usado en esta conversación es temporal y se revoca al terminar.
 
 ---
 
@@ -314,9 +344,9 @@ Esto no bloquea nada: la búsqueda en la Biblioteca, el Costeo, los pedidos y la
 
 | Fase | Contenido | Quién | Listo cuando… |
 |---|---|---|---|
-| **E0** | Orden: repos, documentos, limpieza | Claude | Repo principal ordenado y documentado (**hecho en esta versión**, falta la limpieza profunda de código) |
-| **E1** | **Biblioteca v1** | arena.ai → Claude ordena | Importa ZIP/archivos con duplicados por hash; obtiene imagen (zip, web, captura); dos espacios; búsqueda visual por palabra clave; API local; marca de origen/licencia |
-| **E2** | Verificar Cubo Manager y conectarlo a la Biblioteca | Claude / arena.ai | La app arranca con los módulos correctos; contraseña con hash; recuperación real o desactivada; ver producto con precio y especificaciones |
+| **E0** | Orden: repos, documentos, limpieza | Claude | ✅ **Hecho** — repo principal ordenado y documentado |
+| **E1** | **Biblioteca v1** | arena.ai → Claude ordena | ✅ **Hecho y verificado** — importa ZIP/archivos con duplicados por hash; obtiene imagen (zip, web, captura); dos espacios; búsqueda visual por palabra clave; API local; marca de origen/licencia |
+| **E2** | Verificar Cubo Manager y conectarlo a la Biblioteca | arena.ai (código) + dueño (probar en su PC) + Claude (revisa) | 🔜 **En curso** — la app arranca con los módulos correctos (confirmado por el dueño); contraseña con hash; recuperación real o desactivada; conectada a la Biblioteca real; ver producto con precio y especificaciones |
 | **E3** | Costeo y precios con pantalla; alertas de stock | arena.ai | Cotizar un producto de punta a punta desde la interfaz |
 | **E4** | Taller v1: nombres, cajas, llaveros; bandeja | arena.ai | Un nombre pasa de constructor a Biblioteca sin pasos manuales; pieza real cortada |
 | **E5** | Catálogo + Web unidos; flujo del catálogo | arena.ai (con el flujo definido por el dueño) | Un producto pasa de la Biblioteca al catálogo público |
