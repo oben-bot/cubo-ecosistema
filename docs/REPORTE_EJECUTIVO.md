@@ -27,7 +27,7 @@ Léelo aunque no leas nada más del documento; con esto solo ya puedes seguir el
 - 🔜 **E3 — Costeo** (brief: `docs/fases/FASE_E3_COSTEO.md`). Construir la pantalla que falta sobre el backend que ya está completo. Candidata para arena.ai.
 - **Pendientes de más adelante:** Taller (E4), Catálogo+Web unidos y su flujo de venta (E5), venta de archivos digitales con n8n (E6), asistente de IA conectado (E7 — **decidido dejar fuera a Hermes por ahora**; el contrato queda genérico para enchufar la Wallet, Ollama u otro), empaquetado para vender el ecosistema (E8). Detalle: sección 10 y `BITACORA.md`.
 
-**Decisiones ya tomadas que no hay que volver a discutir:** ver sección 9. Las más relevantes para retomar el hilo: la Biblioteca anterior del dueño se descartó y se construyó desde cero (E1, ya lista); Wallet y Hermes siguen funcionando por su cuenta, sin integrarse todavía; el modelo de venta es cascarón, Windows primero, venta única con actualizaciones de pago.
+**Decisiones ya tomadas que no hay que volver a discutir:** ver sección 9. Las más relevantes para retomar el hilo: la Biblioteca anterior del dueño se descartó y se construyó desde cero (E1, ya lista); Wallet y Hermes siguen funcionando por su cuenta, sin integrarse todavía; el modelo de venta es cascarón, Windows primero, venta única con actualizaciones de pago; cuando arena.ai no tiene créditos disponibles, Claude puede construir directamente esa parte, siempre verificando su propio trabajo con el mismo rigor que aplicaría a una revisión.
 
 **Preguntas todavía sin responder** (no urgentes, no bloquean lo que sigue): dónde correr n8n en concreto, el flujo detallado del catálogo, el alcance inicial del 3D, y cómo se le habla a Hermes por fuera cuando se decida integrarlo.
 
