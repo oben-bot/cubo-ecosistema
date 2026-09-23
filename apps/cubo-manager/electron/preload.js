@@ -90,14 +90,21 @@ contextBridge.exposeInMainWorld('electron', {
     syncGumroad: () => ipcRenderer.invoke('marketing:syncGumroad'),
     getExportaciones: (limit) => ipcRenderer.invoke('marketing:getExportaciones', limit)
   },
-  // Biblioteca Laser (Mini-App externa)
+  // Biblioteca (fase E1, servicio real en 127.0.0.1:7101 - ver ARQUITECTURA.md 3.2)
   biblioteca: {
-    getStatus: () => ipcRenderer.invoke('biblioteca:getStatus'),
-    start: () => ipcRenderer.invoke('biblioteca:start'),
-    getDisenos: (categoria) => ipcRenderer.invoke('biblioteca:getDisenos', categoria),
-    getDisenoById: (id) => ipcRenderer.invoke('biblioteca:getDisenoById', id),
-    copiarDiseno: (disenoId, trabajoId) => ipcRenderer.invoke('biblioteca:copiarDiseno', disenoId, trabajoId),
-    syncProductos: () => ipcRenderer.invoke('biblioteca:syncProductos')
+    getEstado: () => ipcRenderer.invoke('biblioteca:getEstado'),
+    buscar: (filtros) => ipcRenderer.invoke('biblioteca:buscar', filtros),
+    getFicha: (id) => ipcRenderer.invoke('biblioteca:getFicha', id),
+    getImagenBase64: (id, indice) => ipcRenderer.invoke('biblioteca:getImagenBase64', id, indice),
+    descargarParaProduccion: (id, trabajoId, rutaRelativa) =>
+      ipcRenderer.invoke('biblioteca:descargarParaProduccion', id, trabajoId, rutaRelativa)
+  },
+  // Autenticacion local (contrasena con hash, ver src/core/auth.js)
+  auth: {
+    tieneContrasena: () => ipcRenderer.invoke('auth:tieneContrasena'),
+    establecerContrasena: (password) => ipcRenderer.invoke('auth:establecerContrasena', password),
+    verificarCredenciales: (email, password) => ipcRenderer.invoke('auth:verificarCredenciales', email, password),
+    cambiarContrasena: (actual, nueva) => ipcRenderer.invoke('auth:cambiarContrasena', actual, nueva)
   },
   // Ventana
   window: {

@@ -102,8 +102,15 @@ const SettingsMain = () => {
       setMessage({ text: 'La contraseña debe tener al menos 6 caracteres', type: 'error' });
       return;
     }
-    // Guardar contraseña (en producción, usar hash)
-    await window.electron.config.set('password', passwordData.new);
+    const resultado = await window.electron.auth.cambiarContrasena(passwordData.current, passwordData.new);
+    if (!resultado.ok) {
+      const mensajes = {
+        sin_configurar: 'No hay una contraseña configurada todavía.',
+        contrasena_actual_incorrecta: 'La contraseña actual es incorrecta.',
+      };
+      setMessage({ text: mensajes[resultado.motivo] || 'No se pudo cambiar la contraseña', type: 'error' });
+      return;
+    }
     setMessage({ text: 'Contraseña actualizada', type: 'success' });
     setPasswordData({ current: '', new: '', confirm: '' });
     setTimeout(() => setMessage({ text: '', type: '' }), 2000);

@@ -6,9 +6,32 @@ Registro de lo que se ha hecho y lo que sigue. **Se actualiza al cerrar cada fas
 
 ## Estado actual
 
-- **Fase cerrada:** E1 — Biblioteca v1.
-- **Siguiente:** E2 — verificar Cubo Manager y conectarlo a la Biblioteca (deuda técnica en `docs/DEUDA_TECNICA.md`).
+- **Fase abierta:** E2 — Cubo Manager conectado a la Biblioteca real. Parcialmente cerrada (ver entrada de abajo); queda pendiente el endurecimiento de canales IPC genéricos.
+- **Siguiente:** resolver `database:query/run/get` genérico en los 6 módulos que aún lo usan (Clientes, Ventas, Marketing, Producción, Ajustes, Cotizaciones).
 - **Bloqueos:** ninguno. Preguntas abiertas en el reporte ejecutivo (sección 10).
+
+---
+
+## E2 (parcial) — Biblioteca real, autenticación y duplicados · 22 de septiembre de 2026
+
+**Quién:** arena.ai se quedó sin créditos antes de empezar esta fase; a petición del dueño, Claude construyó esta parte directamente (con verificación propia, mismo rigor que en una revisión), en vez de esperar a arena.ai. PR #2 en `cubo-arena`, fusionado a `main`, y trasladado a este repo.
+
+**Hecho**
+- `bibliotecaBridge.js`: cliente HTTP real contra el servicio de la Biblioteca (puerto 7101, contrato `ARQUITECTURA.md` 3.2: `buscar`, `getFicha`, `getImagenBase64`, `descargarParaProduccion`, `getEstado`). Reemplaza al bridge viejo, que lanzaba `organizador_laser.pyw` con una ruta de Windows escrita a mano (ya quitada de `config.js`).
+- `auth.js` (nuevo): contraseña con `scrypt` + sal, comparación en tiempo constante. Reemplaza el texto plano guardado en `config` (`password`).
+- Canales específicos `biblioteca:*` y `auth:*` en `ipcHandlers.js`/`preload.js`, en vez de los viejos `biblioteca:getStatus/start/getDisenos/...` y de `config.get/set('password')`.
+- `LoginScreen.jsx`: usa `auth.verificarCredenciales`; se desactivó honestamente la recuperación por correo (antes decía "se ha enviado un enlace" sin enviar nada) — ahora indica contactar al administrador, hasta implementarla de verdad.
+- `OnboardingWizard.jsx` y `SettingsMain.jsx`: usan `auth.establecerContrasena`/`auth.cambiarContrasena`.
+- `LibraryMain.jsx`: reescrito para consumir la Biblioteca real en vez de la app de Python descartada.
+- Duplicados `.js` eliminados (Finanzas, Biblioteca, Producción, Cotizaciones, Almacén): confirmado por análisis estático que create-react-app cargaba el `.js` viejo por resolución de extensiones; el `.jsx` era la versión completa en los 5 casos. Un solo archivo por módulo ahora.
+
+**Verificación:** `node --check` en los `.js` tocados; compilación con `@babel/preset-react` en los `.jsx` tocados. No se pudo correr la app end-to-end (sin Electron/pantalla en este entorno) ni probar contra una Biblioteca en ejecución real.
+
+**No hecho (sigue abierto en E2)**
+- Canales IPC específicos para `database:query/run/get`, todavía usados desde `ClientesMain.js`, `SalesMain.jsx`, `MarketingMain.jsx`, `ProductionMain.jsx`, `SettingsMain.jsx` y `CotizacionesMain.jsx`.
+- Correr Cubo Manager de verdad (en la PC del taller) contra una Biblioteca levantada, para confirmar en vivo lo que aquí solo se verificó estáticamente.
+
+**Siguiente:** cerrar el IPC genérico restante; luego, prueba real end-to-end en la PC del taller.
 
 ---
 

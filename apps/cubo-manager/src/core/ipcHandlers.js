@@ -2,6 +2,7 @@ const { initializeDatabase, query, run, get, getDb } = require('./database');
 const fs = require('fs').promises;
 const path = require('path');
 const bibliotecaBridge = require('./bibliotecaBridge');
+const auth = require('./auth');
 
 // Funciones para generar folios y números únicos
 const generarFolio = () => {
@@ -762,32 +763,46 @@ function registerIpcHandlers(ipcMain, mainWindow) {
     return await query('SELECT * FROM exportaciones ORDER BY created_at DESC LIMIT ?', [limit]);
   });
 
-  // ==================== BIBLIOTECA LASER HANDLERS ====================
+  // ==================== BIBLIOTECA (fase E1, servicio real) ====================
+  // Contrato: docs/ARQUITECTURA.md 3.2. bibliotecaBridge nunca lanza en getEstado,
+  // y en el resto deja que el error suba para que la UI avise con claridad.
 
-  ipcMain.handle('biblioteca:getStatus', async () => {
-    const bibPath = await bibliotecaBridge.findBiblioteca();
-    const isConnected = await bibliotecaBridge.checkConnection();
-    return { instalada: !!bibPath, conectada: isConnected, ruta: bibPath };
+  ipcMain.handle('biblioteca:getEstado', async () => {
+    return await bibliotecaBridge.getEstado();
   });
 
-  ipcMain.handle('biblioteca:start', async () => {
-    return await bibliotecaBridge.startBiblioteca();
+  ipcMain.handle('biblioteca:buscar', async (_, filtros) => {
+    return await bibliotecaBridge.buscar(filtros || {});
   });
 
-  ipcMain.handle('biblioteca:getDisenos', async (_, categoria) => {
-    return await bibliotecaBridge.getDisenos(categoria);
+  ipcMain.handle('biblioteca:getFicha', async (_, id) => {
+    return await bibliotecaBridge.getFicha(id);
   });
 
-  ipcMain.handle('biblioteca:getDisenoById', async (_, id) => {
-    return await bibliotecaBridge.getDisenoById(id);
+  ipcMain.handle('biblioteca:getImagenBase64', async (_, id, indice = 0) => {
+    return await bibliotecaBridge.getImagenBase64(id, indice);
   });
 
-  ipcMain.handle('biblioteca:copiarDiseno', async (_, disenoId, trabajoId) => {
-    return await bibliotecaBridge.copiarDisenoParaProduccion(disenoId, trabajoId);
+  ipcMain.handle('biblioteca:descargarParaProduccion', async (_, id, trabajoId, rutaRelativa = null) => {
+    return await bibliotecaBridge.descargarParaProduccion(id, trabajoId, rutaRelativa);
   });
 
-  ipcMain.handle('biblioteca:syncProductos', async () => {
-    return await bibliotecaBridge.syncProductosToBiblioteca();
+  // ==================== AUTENTICACION (contrasena con hash, sin recuperacion simulada) ====================
+
+  ipcMain.handle('auth:tieneContrasena', async () => {
+    return await auth.tieneContrasena();
+  });
+
+  ipcMain.handle('auth:establecerContrasena', async (_, password) => {
+    return await auth.establecerContrasena(password);
+  });
+
+  ipcMain.handle('auth:verificarCredenciales', async (_, email, password) => {
+    return await auth.verificarCredenciales(email, password);
+  });
+
+  ipcMain.handle('auth:cambiarContrasena', async (_, actual, nueva) => {
+    return await auth.cambiarContrasena(actual, nueva);
   });
 
   // Ventana
