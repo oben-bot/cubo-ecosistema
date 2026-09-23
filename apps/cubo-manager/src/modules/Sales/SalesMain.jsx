@@ -45,7 +45,7 @@ const SalesMain = () => {
 
   const loadClientes = async () => {
     try {
-      const data = await window.electron.database.query('SELECT id, nombre FROM clientes ORDER BY nombre');
+      const data = await window.electron.clientes.getAll();
       setClientes(data || []);
     } catch (error) {
       console.error('Error cargando clientes:', error);
@@ -54,8 +54,7 @@ const SalesMain = () => {
 
   const loadProductos = async () => {
     try {
-      const data = await window.electron.database.query(`SELECT id, nombre, precio_venta, unidad FROM inventario 
-        WHERE tipo = 'producto_terminado' AND cantidad > 0 ORDER BY nombre`);
+      const data = await window.electron.inventario.getProductosTerminados({ soloConStock: true });
       setProductos(data || []);
     } catch (error) {
       console.error('Error cargando productos:', error);

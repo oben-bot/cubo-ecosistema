@@ -25,9 +25,9 @@ function App() {
         const completed = await window.electron.config.get('onboarding_completed');
         setOnboardingComplete(completed === 'true' || completed === true);
         
-        const savedPassword = await window.electron.config.get('password');
+        const tieneContrasena = await window.electron.auth.tieneContrasena();
         const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-        setIsAuth(isLoggedIn && !!savedPassword);
+        setIsAuth(isLoggedIn && tieneContrasena);
       } catch (error) {
         console.error('Error during initialization:', error);
       } finally {

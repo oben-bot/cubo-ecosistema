@@ -20,13 +20,12 @@ Léelo aunque no leas nada más del documento; con esto solo ya puedes seguir el
 
 **Cómo se trabaja.** Un frente a la vez. Cada fase tiene un brief en `docs/fases/FASE_EX_....md` con alcance, lo que queda fuera, y criterios de aceptación verificables. arena.ai construye en `cubo-arena`; Claude revisa el PR, **lo ejecuta y lo prueba él mismo** (no confía solo en las notas de entrega), lo funde, lo traslada a `cubo-ecosistema` y cierra la fase en `BITACORA.md`.
 
-**Estado ahora mismo (21 de septiembre de 2026, tarde):**
+**Estado ahora mismo (22 de septiembre de 2026):**
 - ✅ **E0 — Orden:** hecho. Repos creados, estructura, documentos base.
 - ✅ **E1 — Biblioteca v1:** hecho y verificado. Servicio Node/TypeScript + SQLite en `apps/biblioteca` que ordena diseños (originales de solo lectura vs. trabajos personalizados), con búsqueda visual, importación masiva con detección de duplicados, y la regla de que solo se puede vender un archivo en digital si su licencia es propia o comercial. 41 pruebas automáticas, y Claude además la corrió a mano y confirmó los casos límite.
-- 🔜 **E2 — Cubo Manager: verificar y conectar a la Biblioteca real** (brief: `docs/fases/FASE_E2_CUBO_MANAGER.md`). En curso, con dos frentes en paralelo:
-  - **arena.ai** construye en `cubo-arena` lo que no depende de ejecutar la app (conectar el puente de la Biblioteca, cifrar contraseñas, quitar la recuperación por correo simulada, endurecer los canales IPC).
-  - **El dueño** corre Cubo Manager en su propia PC (Windows) para confirmar cuál de los módulos duplicados `.js`/`.jsx` se está cargando en la práctica (Finanzas, Biblioteca, Producción, Cotizaciones, Almacén) y reporta qué ve.
-- **Pendientes de más adelante (no bloquean E2):** Costeo con pantalla (E3), Taller (E4), Catálogo+Web unidos y su flujo de venta (E5), venta de archivos digitales con n8n (E6), asistente de IA conectado (E7 — **decidido dejar fuera a Hermes por ahora**; el contrato queda genérico para enchufar la Wallet, Ollama u otro), empaquetado para vender el ecosistema (E8). Detalle: sección 10 y `BITACORA.md`.
+- ✅ **E2 — Cubo Manager conectado a la Biblioteca real, con seguridad básica corregida:** hecho y verificado. Módulos duplicados `.js`/`.jsx` resueltos (las 5 versiones viejas eliminadas); `bibliotecaBridge.js` reescrito como cliente HTTP real contra `apps/biblioteca`; contraseñas con hash (`scrypt`); recuperación por correo desactivada honestamente en vez de simulada; canales IPC genéricos (`database:*`, `fs:*`) eliminados y reemplazados por específicos. La app compila limpia con `react-scripts build`. Detalle completo y verificación paso a paso en `BITACORA.md`.
+- 🔜 **E3 — Costeo** (brief: `docs/fases/FASE_E3_COSTEO.md`). Construir la pantalla que falta sobre el backend que ya está completo. Candidata para arena.ai.
+- **Pendientes de más adelante:** Taller (E4), Catálogo+Web unidos y su flujo de venta (E5), venta de archivos digitales con n8n (E6), asistente de IA conectado (E7 — **decidido dejar fuera a Hermes por ahora**; el contrato queda genérico para enchufar la Wallet, Ollama u otro), empaquetado para vender el ecosistema (E8). Detalle: sección 10 y `BITACORA.md`.
 
 **Decisiones ya tomadas que no hay que volver a discutir:** ver sección 9. Las más relevantes para retomar el hilo: la Biblioteca anterior del dueño se descartó y se construyó desde cero (E1, ya lista); Wallet y Hermes siguen funcionando por su cuenta, sin integrarse todavía; el modelo de venta es cascarón, Windows primero, venta única con actualizaciones de pago.
 
@@ -346,8 +345,8 @@ Esto no bloquea nada: la búsqueda en la Biblioteca, el Costeo, los pedidos y la
 |---|---|---|---|
 | **E0** | Orden: repos, documentos, limpieza | Claude | ✅ **Hecho** — repo principal ordenado y documentado |
 | **E1** | **Biblioteca v1** | arena.ai → Claude ordena | ✅ **Hecho y verificado** — importa ZIP/archivos con duplicados por hash; obtiene imagen (zip, web, captura); dos espacios; búsqueda visual por palabra clave; API local; marca de origen/licencia |
-| **E2** | Verificar Cubo Manager y conectarlo a la Biblioteca | arena.ai (código) + dueño (probar en su PC) + Claude (revisa) | 🔜 **En curso** — la app arranca con los módulos correctos (confirmado por el dueño); contraseña con hash; recuperación real o desactivada; conectada a la Biblioteca real; ver producto con precio y especificaciones |
-| **E3** | Costeo y precios con pantalla; alertas de stock | arena.ai | Cotizar un producto de punta a punta desde la interfaz |
+| **E2** | Verificar Cubo Manager y conectarlo a la Biblioteca | Claude Code + Claude (revisa y completa) | ✅ **Hecho y verificado** — módulos duplicados resueltos; contraseña con hash; recuperación desactivada honestamente; conectado a la Biblioteca real; canales IPC endurecidos |
+| **E3** | Costeo y precios con pantalla; alertas de stock | arena.ai | 🔜 Cotizar un producto de punta a punta desde la interfaz |
 | **E4** | Taller v1: nombres, cajas, llaveros; bandeja | arena.ai | Un nombre pasa de constructor a Biblioteca sin pasos manuales; pieza real cortada |
 | **E5** | Catálogo + Web unidos; flujo del catálogo | arena.ai (con el flujo definido por el dueño) | Un producto pasa de la Biblioteca al catálogo público |
 | **E6** | Venta de archivos: n8n, cola de entregas, pagos | arena.ai | Una venta de prueba entrega el archivo con la PC encendida y avisa con la PC apagada |

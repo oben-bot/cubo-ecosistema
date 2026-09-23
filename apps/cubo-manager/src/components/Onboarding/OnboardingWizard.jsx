@@ -64,7 +64,7 @@ const OnboardingWizard = ({ onComplete }) => {
       setLoading(true);
       await window.electron.config.set('business_name', formData.businessName);
       await window.electron.config.set('user_email', formData.email);
-      await window.electron.config.set('password', formData.password);
+      await window.electron.auth.establecerContrasena(formData.password);
       await window.electron.config.set('theme', formData.theme);
       await window.electron.config.set('language', formData.language);
       await window.electron.config.set('onboarding_completed', true);

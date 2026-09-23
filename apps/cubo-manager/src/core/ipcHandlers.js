@@ -2,6 +2,7 @@ const { initializeDatabase, query, run, get, getDb } = require('./database');
 const fs = require('fs').promises;
 const path = require('path');
 const bibliotecaBridge = require('./bibliotecaBridge');
+const auth = require('./auth');
 
 // Funciones para generar folios y números únicos
 const generarFolio = () => {
@@ -31,31 +32,61 @@ const generarFolioVenta = () => {
 function registerIpcHandlers(ipcMain, mainWindow) {
   initializeDatabase();
 
-  // Base de datos general
-  ipcMain.handle('database:query', async (_, sql, params) => {
-    return query(sql, params);
+  // Nota: los canales genericos 'database:query/run/get' y 'fs:readFile/
+  // writeFile/readDir' que exponian SQL y rutas de archivo arbitrarias al
+  // renderer se eliminaron (fase E2). Cada operacion real tiene su propio
+  // canal especifico abajo (clientes:*, inventario:*, config:getFondoModulo/
+  // setFondo, etc).
+
+  // Clientes
+  ipcMain.handle('clientes:getAll', async () => {
+    return query('SELECT * FROM clientes ORDER BY nombre');
   });
 
-  ipcMain.handle('database:run', async (_, sql, params) => {
-    return run(sql, params);
+  ipcMain.handle('clientes:create', async (_, cliente) => {
+    return run(
+      'INSERT INTO clientes (nombre, telefono, email, direccion, notas) VALUES (?, ?, ?, ?, ?)',
+      [cliente.nombre, cliente.telefono || null, cliente.email || null, cliente.direccion || null, cliente.notas || null]
+    );
   });
 
-  ipcMain.handle('database:get', async (_, sql, params) => {
-    return get(sql, params);
+  ipcMain.handle('clientes:update', async (_, id, cliente) => {
+    return run(
+      'UPDATE clientes SET nombre = ?, telefono = ?, email = ?, direccion = ?, notas = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+      [cliente.nombre, cliente.telefono || null, cliente.email || null, cliente.direccion || null, cliente.notas || null, id]
+    );
   });
 
-  // Sistema de archivos
-  ipcMain.handle('fs:readFile', async (_, filePath) => {
-    return fs.readFile(filePath, 'utf-8');
+  ipcMain.handle('clientes:delete', async (_, id) => {
+    return run('DELETE FROM clientes WHERE id = ?', [id]);
   });
 
-  ipcMain.handle('fs:writeFile', async (_, filePath, data) => {
-    await fs.writeFile(filePath, data);
-    return { success: true };
+  // Inventario: productos terminados (usado por Ventas y Marketing)
+  ipcMain.handle('inventario:getProductosTerminados', async (_, { soloConStock = false } = {}) => {
+    if (soloConStock) {
+      return query(
+        "SELECT * FROM inventario WHERE tipo = 'producto_terminado' AND cantidad > 0 ORDER BY nombre"
+      );
+    }
+    return query("SELECT * FROM inventario WHERE tipo = 'producto_terminado' ORDER BY nombre");
   });
 
-  ipcMain.handle('fs:readDir', async (_, dirPath) => {
-    return fs.readdir(dirPath);
+  // Fondo por modulo (Ajustes)
+  ipcMain.handle('config:getFondoModulo', async (_, modulo) => {
+    return get('SELECT tipo, valor, imagen_url FROM fondos_por_modulo WHERE modulo = ?', [modulo]);
+  });
+
+  ipcMain.handle('config:setFondo', async (_, modulo, tipo, valor) => {
+    if (tipo === 'color') {
+      return run(
+        "UPDATE fondos_por_modulo SET tipo = 'color', valor = ?, imagen_url = NULL WHERE modulo = ?",
+        [valor, modulo]
+      );
+    }
+    return run(
+      "UPDATE fondos_por_modulo SET tipo = 'imagen', imagen_url = ?, valor = '#1a1a2e' WHERE modulo = ?",
+      [valor, modulo]
+    );
   });
 
   // Configuración
@@ -762,32 +793,46 @@ function registerIpcHandlers(ipcMain, mainWindow) {
     return await query('SELECT * FROM exportaciones ORDER BY created_at DESC LIMIT ?', [limit]);
   });
 
-  // ==================== BIBLIOTECA LASER HANDLERS ====================
+  // ==================== BIBLIOTECA (fase E1, servicio real) ====================
+  // Contrato: docs/ARQUITECTURA.md 3.2. bibliotecaBridge nunca lanza en getEstado,
+  // y en el resto deja que el error suba para que la UI avise con claridad.
 
-  ipcMain.handle('biblioteca:getStatus', async () => {
-    const bibPath = await bibliotecaBridge.findBiblioteca();
-    const isConnected = await bibliotecaBridge.checkConnection();
-    return { instalada: !!bibPath, conectada: isConnected, ruta: bibPath };
+  ipcMain.handle('biblioteca:getEstado', async () => {
+    return await bibliotecaBridge.getEstado();
   });
 
-  ipcMain.handle('biblioteca:start', async () => {
-    return await bibliotecaBridge.startBiblioteca();
+  ipcMain.handle('biblioteca:buscar', async (_, filtros) => {
+    return await bibliotecaBridge.buscar(filtros || {});
   });
 
-  ipcMain.handle('biblioteca:getDisenos', async (_, categoria) => {
-    return await bibliotecaBridge.getDisenos(categoria);
+  ipcMain.handle('biblioteca:getFicha', async (_, id) => {
+    return await bibliotecaBridge.getFicha(id);
   });
 
-  ipcMain.handle('biblioteca:getDisenoById', async (_, id) => {
-    return await bibliotecaBridge.getDisenoById(id);
+  ipcMain.handle('biblioteca:getImagenBase64', async (_, id, indice = 0) => {
+    return await bibliotecaBridge.getImagenBase64(id, indice);
   });
 
-  ipcMain.handle('biblioteca:copiarDiseno', async (_, disenoId, trabajoId) => {
-    return await bibliotecaBridge.copiarDisenoParaProduccion(disenoId, trabajoId);
+  ipcMain.handle('biblioteca:descargarParaProduccion', async (_, id, trabajoId, rutaRelativa = null) => {
+    return await bibliotecaBridge.descargarParaProduccion(id, trabajoId, rutaRelativa);
   });
 
-  ipcMain.handle('biblioteca:syncProductos', async () => {
-    return await bibliotecaBridge.syncProductosToBiblioteca();
+  // ==================== AUTENTICACION (contrasena con hash, sin recuperacion simulada) ====================
+
+  ipcMain.handle('auth:tieneContrasena', async () => {
+    return await auth.tieneContrasena();
+  });
+
+  ipcMain.handle('auth:establecerContrasena', async (_, password) => {
+    return await auth.establecerContrasena(password);
+  });
+
+  ipcMain.handle('auth:verificarCredenciales', async (_, email, password) => {
+    return await auth.verificarCredenciales(email, password);
+  });
+
+  ipcMain.handle('auth:cambiarContrasena', async (_, actual, nueva) => {
+    return await auth.cambiarContrasena(actual, nueva);
   });
 
   // Ventana

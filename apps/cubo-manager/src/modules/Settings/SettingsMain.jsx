@@ -35,10 +35,7 @@ const SettingsMain = () => {
     const modulosList = ['dashboard', 'customers', 'quotations', 'production', 'warehouse', 'sales', 'finance', 'calendar', 'library'];
     const fondosData = {};
     for (const modulo of modulosList) {
-      const fondo = await window.electron.database.get(
-        'SELECT tipo, valor, imagen_url FROM fondos_por_modulo WHERE modulo = ?',
-        [modulo]
-      );
+      const fondo = await window.electron.config.getFondoModulo(modulo);
       fondosData[modulo] = fondo || { tipo: 'color', valor: '#1a1a2e' };
     }
     setFondos(fondosData);
@@ -77,17 +74,7 @@ const SettingsMain = () => {
   };
 
   const saveFondo = async (modulo, tipo, valor) => {
-    if (tipo === 'color') {
-      await window.electron.database.run(
-        `UPDATE fondos_por_modulo SET tipo = 'color', valor = ?, imagen_url = NULL WHERE modulo = ?`,
-        [valor, modulo]
-      );
-    } else {
-      await window.electron.database.run(
-        `UPDATE fondos_por_modulo SET tipo = 'imagen', imagen_url = ?, valor = '#1a1a2e' WHERE modulo = ?`,
-        [valor, modulo]
-      );
-    }
+    await window.electron.config.setFondo(modulo, tipo, valor);
     setFondos({ ...fondos, [modulo]: { tipo, valor } });
     setMessage({ text: `Fondo guardado para ${modulo}`, type: 'success' });
     setTimeout(() => setMessage({ text: '', type: '' }), 2000);
@@ -102,8 +89,15 @@ const SettingsMain = () => {
       setMessage({ text: 'La contraseña debe tener al menos 6 caracteres', type: 'error' });
       return;
     }
-    // Guardar contraseña (en producción, usar hash)
-    await window.electron.config.set('password', passwordData.new);
+    const resultado = await window.electron.auth.cambiarContrasena(passwordData.current, passwordData.new);
+    if (!resultado.ok) {
+      const mensajes = {
+        sin_configurar: 'No hay una contraseña configurada todavía.',
+        contrasena_actual_incorrecta: 'La contraseña actual es incorrecta.',
+      };
+      setMessage({ text: mensajes[resultado.motivo] || 'No se pudo cambiar la contraseña', type: 'error' });
+      return;
+    }
     setMessage({ text: 'Contraseña actualizada', type: 'success' });
     setPasswordData({ current: '', new: '', confirm: '' });
     setTimeout(() => setMessage({ text: '', type: '' }), 2000);

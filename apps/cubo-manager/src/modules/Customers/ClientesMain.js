@@ -23,7 +23,7 @@ const ClientesMain = () => {
   const loadClientes = async () => {
     setLoading(true);
     try {
-      const result = await window.electron.database.query('SELECT * FROM clientes ORDER BY nombre');
+      const result = await window.electron.clientes.getAll();
       setClientes(result || []);
     } catch (error) {
       console.error('Error cargando clientes:', error);
@@ -37,16 +37,10 @@ const ClientesMain = () => {
     try {
       if (editingCliente) {
         // Actualizar
-        await window.electron.database.run(
-          `UPDATE clientes SET nombre = ?, telefono = ?, email = ?, direccion = ?, notas = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
-          [formData.nombre, formData.telefono, formData.email, formData.direccion, formData.notas, editingCliente.id]
-        );
+        await window.electron.clientes.update(editingCliente.id, formData);
       } else {
         // Insertar
-        await window.electron.database.run(
-          `INSERT INTO clientes (nombre, telefono, email, direccion, notas) VALUES (?, ?, ?, ?, ?)`,
-          [formData.nombre, formData.telefono, formData.email, formData.direccion, formData.notas]
-        );
+        await window.electron.clientes.create(formData);
       }
       await loadClientes();
       resetForm();
@@ -60,7 +54,7 @@ const ClientesMain = () => {
   const handleDelete = async (id) => {
     if (window.confirm('¿Eliminar este cliente? Se eliminará todo su historial.')) {
       try {
-        await window.electron.database.run('DELETE FROM clientes WHERE id = ?', [id]);
+        await window.electron.clientes.delete(id);
         await loadClientes();
       } catch (error) {
         console.error('Error eliminando cliente:', error);

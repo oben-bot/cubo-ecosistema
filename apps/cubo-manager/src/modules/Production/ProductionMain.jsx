@@ -44,7 +44,7 @@ const ProductionMain = () => {
 
   const loadClientes = async () => {
     try {
-      const data = await window.electron.database.query('SELECT id, nombre FROM clientes ORDER BY nombre');
+      const data = await window.electron.clientes.getAll();
       setClientes(data || []);
     } catch (error) {
       console.error('Error cargando clientes:', error);

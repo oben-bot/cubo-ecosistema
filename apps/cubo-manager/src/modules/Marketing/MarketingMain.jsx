@@ -21,7 +21,7 @@ const MarketingMain = () => {
     setLoading(true);
     try {
       const [productosData, cotizacionesData, exportacionesData] = await Promise.all([
-        window.electron.database.query(`SELECT * FROM inventario WHERE tipo = 'producto_terminado' ORDER BY nombre`),
+        window.electron.inventario.getProductosTerminados(),
         window.electron.cotizaciones.getAll(),
         window.electron.marketing.getExportaciones(50)
       ]);

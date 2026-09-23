@@ -2,20 +2,20 @@
 
 Hallazgos de la revisión del 21 de septiembre de 2026. Marcar como resuelto al cerrar, con fecha.
 
-## Cubo Manager (`apps/cubo-manager`)
-- [ ] **Módulos duplicados `.js`/`.jsx`:** Finanzas, Biblioteca, Producción, Cotizaciones y Almacén. Create React App resuelve `.js` antes que `.jsx`; probablemente se muestran las versiones viejas. Ejecutar la app, confirmar cuál se carga, conservar la vigente y eliminar la otra.
-- [ ] **Contraseña en texto plano** (`Settings` y `LoginScreen`). Usar hash (argon2 o scrypt) con sal.
-- [ ] **Recuperación por correo simulada:** muestra "enlace enviado" sin enviar nada. Implementar de verdad o desactivar y no mostrar el mensaje.
-- [ ] **Idioma:** solo se guarda la preferencia; no hay traducciones. Implementar es/en/zh (E8).
-- [ ] **Canales IPC genéricos** (`database:query/run/get`, `fs:*`) expuestos al frontend. Reemplazar por canales específicos.
-- [ ] **Costeo sin pantalla** (backend completo). Construir la interfaz (E3).
-- [ ] **Marketing sin ruta** y con envíos simulados (WordPress, WhatsApp, Gumroad). Conectar de verdad o retirar.
-- [ ] **Asistente local por palabras clave**, no usa IA; el README dice que integra Hermes. Corregir README o integrar (E7).
-- [ ] **`config.js`:** ruta de usuario escrita a mano (`C:\Users\HP\...`), nombre de taller fijo y lista de archivos `.db` que no corresponde a la realidad.
-- [ ] **Puente con la Biblioteca:** consulta `/api/disenos` o escanea carpetas y lanza un ejecutable con ruta fija. Reescribir contra la API nueva de la Biblioteca (E2).
-- [ ] **Dependencias:** 76 vulnerabilidades (4 críticas); Electron 26 y `react-scripts` obsoletos.
+## Cubo Manager (`apps/cubo-manager`) — cerrado en fase E2 (22 de septiembre de 2026)
+- [x] **Módulos duplicados `.js`/`.jsx`:** resuelto. Confirmado por análisis estático (CRA resuelve `.js` antes que `.jsx` sin extensión) que las versiones `.js` eran las viejas; eliminadas las 5 (Finanzas, Biblioteca, Producción, Cotizaciones, Almacén). La de Biblioteca lanzaba la app de Python descartada con ruta `C:\Users\HP\...`. Bono: bundle un 40% más liviano (129 KB → 78 KB gzip).
+- [x] **Contraseña en texto plano:** resuelto. Hash con `scrypt` + sal, comparación en tiempo constante (`src/core/auth.js`), probado con 8 casos reales contra SQLite.
+- [x] **Recuperación por correo simulada:** resuelto (opción A del brief E2). Mensaje honesto ("contacta al administrador"), sin fingir un envío.
+- [x] **Canales IPC genéricos** (`database:query/run/get`, `fs:*`): eliminados. Reemplazados por `clientes:*`, `inventario:getProductosTerminados`, `config:getFondoModulo/setFondo`; los 6 archivos del frontend que los usaban quedaron migrados y probados.
+- [x] **Puente con la Biblioteca:** resuelto. `bibliotecaBridge.js` es ahora un cliente HTTP real contra `apps/biblioteca` (contrato 3.2), probado de extremo a extremo (estado, búsqueda, ficha, imagen, servicio caído).
+- [x] **`config.js`:** ruta de usuario escrita a mano eliminada junto con el bloque `miniApps` (ya no aplica).
+- [ ] **Idioma:** solo se guarda la preferencia; sin traducciones. Sigue pendiente (E8).
+- [ ] **Costeo sin pantalla** (backend completo). Siguiente: fase E3.
+- [ ] **Marketing sin ruta** y con envíos simulados (WordPress, WhatsApp, Gumroad). Pendiente.
+- [ ] **Asistente local por palabras clave**, no usa IA; el README dice que integra Hermes. Corregir README o integrar (E7, con Hermes fuera por ahora).
+- [ ] **Dependencias:** 76 vulnerabilidades (4 críticas); Electron 26 y `react-scripts` obsoletos. No tocado en E2 (fuera del alcance del brief).
 - [ ] **Datos de ejemplo (mock)** mezclados con código; separar.
-- [ ] Base de datos vacía de plantilla eliminada del repo; confirmar que la app la crea sola al arrancar.
+- [ ] Confirmar que la app crea sola su base de datos vacía al arrancar (no se probó con Electron real, sin display en este entorno).
 
 ## Catálogo Digital (`apps/catalogo-web`)
 - [ ] **`/api/upload-image` (Cloudinary) sin autenticación.** Cerrar o eliminar (ya hay subida a Drive).
