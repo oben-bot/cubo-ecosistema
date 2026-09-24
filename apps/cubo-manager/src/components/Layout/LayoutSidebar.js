@@ -14,6 +14,7 @@ const LayoutSidebar = ({ onLogout }) => {
     { id: 'finance', name: 'Finanzas', icon: '💰', path: '/finance' },
     { id: 'sales', name: 'Ventas', icon: '🛒', path: '/sales' },
     { id: 'library', name: 'Biblioteca', icon: '📚', path: '/library' },
+    { id: 'costeo', name: 'Costeo', icon: '🧮', path: '/costeo' },
     { id: 'settings', name: 'Configuración', icon: '⚙️', path: '/settings' },
   ];
 

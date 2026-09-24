@@ -10,6 +10,7 @@ const moduleHubConfig = [
   { key: 'finance', label: 'Finanzas', icon: '💰', route: '/finance', glow: '#2dd4bf' },
   { key: 'customers', label: 'Clientes', icon: '👥', route: '/customers', glow: '#60a5fa' },
   { key: 'library', label: 'Biblioteca', icon: '🗂️', route: '/library', glow: '#e879f9' },
+  { key: 'costeo', label: 'Costeo', icon: '🧮', route: '/costeo', glow: '#fbbf24' },
   { key: 'settings', label: 'Configuración', icon: '⚙️', route: '/settings', glow: '#94a3b8' },
 ];
 

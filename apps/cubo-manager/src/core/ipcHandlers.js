@@ -955,6 +955,9 @@ function registerIpcHandlers(ipcMain, mainWindow) {
   });
 
   ipcMain.handle('costeo:saveTiempos', async (_, referenciaTipo, referenciaId, minutosLaser, minutosManoObra) => {
+    // Para calculo_libre necesitamos idempotencia: si el usuario recalcula, no sumar tiempos.
+    // Borramos tiempos previos de la misma referencia antes de insertar el nuevo.
+    await run(`DELETE FROM trabajo_tiempos WHERE referencia_tipo = ? AND referencia_id = ?`, [referenciaTipo, referenciaId]);
     await run(`INSERT INTO trabajo_tiempos (referencia_tipo, referencia_id, minutos_laser, minutos_mano_obra)
       VALUES (?, ?, ?, ?)`, [referenciaTipo, referenciaId, minutosLaser || 0, minutosManoObra || 0]);
     return { success: true };

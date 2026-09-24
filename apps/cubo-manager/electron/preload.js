@@ -88,6 +88,21 @@ contextBridge.exposeInMainWorld('electron', {
     syncGumroad: () => ipcRenderer.invoke('marketing:syncGumroad'),
     getExportaciones: (limit) => ipcRenderer.invoke('marketing:getExportaciones', limit)
   },
+  // Costeo (fase E3) - backend ya existente, ver src/core/ipcHandlers.js costeo:*
+  costeo: {
+    getConfigMaquina: () => ipcRenderer.invoke('costeo:getConfigMaquina'),
+    saveConfigMaquina: (cfg) => ipcRenderer.invoke('costeo:saveConfigMaquina', cfg),
+    getMateriales: () => ipcRenderer.invoke('costeo:getMateriales'),
+    saveMaterial: (material) => ipcRenderer.invoke('costeo:saveMaterial', material),
+    deleteMaterial: (id) => ipcRenderer.invoke('costeo:deleteMaterial', id),
+    getInsumos: () => ipcRenderer.invoke('costeo:getInsumos'),
+    saveInsumo: (insumo) => ipcRenderer.invoke('costeo:saveInsumo', insumo),
+    deleteInsumo: (id) => ipcRenderer.invoke('costeo:deleteInsumo', id),
+    addConsumo: (item) => ipcRenderer.invoke('costeo:addConsumo', item),
+    getConsumo: (referenciaTipo, referenciaId) => ipcRenderer.invoke('costeo:getConsumo', referenciaTipo, referenciaId),
+    saveTiempos: (referenciaTipo, referenciaId, minutosLaser, minutosManoObra) => ipcRenderer.invoke('costeo:saveTiempos', referenciaTipo, referenciaId, minutosLaser, minutosManoObra),
+    calcularCosto: (referenciaTipo, referenciaId) => ipcRenderer.invoke('costeo:calcularCosto', referenciaTipo, referenciaId)
+  },
   // Biblioteca (fase E1, servicio real en 127.0.0.1:7101 - ver ARQUITECTURA.md 3.2)
   biblioteca: {
     getEstado: () => ipcRenderer.invoke('biblioteca:getEstado'),

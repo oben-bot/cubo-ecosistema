@@ -11,6 +11,7 @@ import CotizacionesMain from './modules/Quotations/CotizacionesMain';
 import Assistant from './components/IA/Assistant';
 import VentasMain from './modules/Sales/VentasMain';
 import LibraryMain from './modules/Library/LibraryMain';
+import CosteoMain from './modules/Costeo/CosteoMain';
 import SettingsMain from './modules/Settings/SettingsMain';
 import LayoutSidebar from './components/Layout/LayoutSidebar';
 
@@ -61,6 +62,7 @@ function App() {
           <Route path="/quotations" element={<CotizacionesMain />} />
           <Route path="/sales" element={<VentasMain />} />
           <Route path="/library" element={<LibraryMain />} />
+          <Route path="/costeo" element={<CosteoMain />} />
           <Route path="/settings" element={<SettingsMain />} />
           <Route path="/assistant" element={<Assistant />} />
         </Routes>

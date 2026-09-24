@@ -72,7 +72,7 @@ Autenticación local: cabecera `X-Cubo-Key` con una llave por instalación, gene
 ### 3.3 Taller → bandeja → Biblioteca
 
 - `POST /bandeja` (Taller): un constructor deposita `{ archivo, formato, medidas_mm, receta, constructor }`.
-- `POST /bandeja/:id/guardar` (Taller): entrega el archivo a `POST /activos` de la Biblioteca con `espacio: "trabajo"` y su `receta`. **Descartar** borra el archivo temporal.
+- `POST /bandeja/:id/guardar` (Taller): entrega el archivo a `POST /activos` de la Biblioteca con **`espacio: "original"`** (no "trabajo": un diseño recién generado no tiene un original previo al que enlazarse), `origen: "taller:<nombre-constructor>"`, `licencia: "propia"` y su `receta` (la Biblioteca ya soporta este campo desde la fase E1, confirmado en `apps/biblioteca/src/activos.ts`). **Descartar** borra el archivo temporal.
 - Un constructor devuelve siempre: archivo (SVG/DXF/STL/3MF), medidas en mm, y la receta que permite regenerarlo. El Taller puede además devolver **largo de corte y área** para el Costeo.
 - Constructores **enlazados**: una carpeta vigilada detecta los archivos descargados y los deposita en la bandeja.
 

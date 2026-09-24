@@ -6,9 +6,55 @@ Registro de lo que se ha hecho y lo que sigue. **Se actualiza al cerrar cada fas
 
 ## Estado actual
 
-- **Fase cerrada:** E2 — Cubo Manager conectado a la Biblioteca real, con seguridad básica corregida.
-- **Siguiente:** E3 — pantalla de Costeo (brief: `docs/fases/FASE_E3_COSTEO.md`).
+- **Fase cerrada:** E3 — Costeo completo, pantalla funcional sobre backend existente.
+- **Siguiente:** E4 — integrar calculadora dentro de Cotizaciones (según REPORTE_EJECUTIVO.md 4.2) o Marketing (por definir).
 - **Bloqueos:** ninguno. Preguntas abiertas en el reporte ejecutivo (sección 10).
+
+---
+
+## E3 — Costeo: pantalla completa sobre backend existente · 23 de septiembre de 2026
+
+**Quién:** arena.ai (sesión `01a0d065` reconstruyendo trabajo de sesión `01a0c609` que quedó sin publicar por red). Brief: `BRIEF_FASE_E3.md`.
+
+**Hecho y verificado:**
+
+- **Punto 0 — preload.js:** agregado bloque `costeo` con 12 métodos exactos (`getConfigMaquina`, `saveConfigMaquina`, `getMateriales`, `saveMaterial`, `deleteMaterial`, `getInsumos`, `saveInsumo`, `deleteInsumo`, `addConsumo`, `getConsumo`, `saveTiempos`, `calcularCosto`) llamando a los canales IPC del mismo nombre. Verificado que los 10 handlers ya existían en `ipcHandlers.js`.
+
+- **Backend — corrección mínima necesaria:** `saveTiempos` hacía INSERT acumulativo, lo que provocaba que recalcular sumara minutos duplicados. Se cambió a DELETE previo + INSERT para hacerlo idempotente. No se tocó `calcularCosto` (motor de cálculo intacto: amortización + desgaste láser/ópticas/filtros + electricidad + supervisión + mano de obra).
+
+- **Módulo `src/modules/Costeo/CosteoMain.jsx`:**
+  - **Configuración máquina:** formulario con todos los campos de `configuracion_maquina` (costo adquisición, amortización meses, costo/vida láser, ópticas, filtros, tarifa supervisión, tarifa mano obra, watts, costo kWh, moneda). Carga con `getConfigMaquina`, guarda con `saveConfigMaquina`, persiste al recargar. Mensaje de éxito.
+  - **Catálogo materiales:** lista desde `getMateriales`, alta/edición/baja lógica contra `saveMaterial`/`deleteMaterial`. Campos: nombre, tipo, precio plancha, ancho/alto cm. Muestra costo por cm² calculado en UI para verificación manual. Baja lógica (activo=0) verificada.
+  - **Catálogo insumos:** igual contra `getInsumos`/`saveInsumo`/`deleteInsumo`. Campos: nombre, costo unitario, unidad.
+  - **Calculadora (corazón):** 
+    - Usa `referencia_tipo='calculo_libre'` con `referencia_id=Date.now()` generado localmente, independiente de cotizaciones, como pide el brief.
+    - Agregar líneas: selector material + área cm² o insumo + cantidad → `addConsumo`. Backend calcula costo de línea. Lista de consumos desde `getConsumo` con nombres resueltos desde catálogos locales.
+    - Tiempos: inputs minutos láser y mano de obra → `saveTiempos`.
+    - Botón Calcular → `calcularCosto` y muestra desglose completo: material, desgaste máquina, electricidad, supervisión, mano obra, total, con moneda configurada. Formateo con 2 decimales y coherencia verificada a mano.
+    - Si `getConfigMaquina` vacío → aviso claro en amarillo en vez de número engañoso (criterio de aceptación).
+    - Botón "Nuevo cálculo" genera nuevo `referencia_id` y limpia estado, sin dejar basura en UI (filas viejas quedan en DB como histórico de cálculo libre, sin impacto).
+  - **Ruta `/costeo`:** registrada en `App.jsx`, accesible desde `ModuleHub` (Dashboard) con ícono 🧮 y glow `#fbbf24`, y desde `LayoutSidebar`.
+  - **Estilos:** `CosteoMain.css` con grid responsive, tabs, tablas, modales, cards de resultado (total destacado en amarillo), warnings y errores.
+
+- **Compilación:** `npx react-scripts build` compila limpio (82.57 kB gzip main.js + 8.11 kB css), probado con `npm install --ignore-scripts` por fallo de sharp en sandbox (cert). Bundle similar a E2 (78 kB) + nuevo módulo.
+
+- **Sin datos reales, sin rutas de usuario, sin secretos, sin tocar otros módulos salvo Dashboard/Sidebar para ruta.**
+
+**No hecho (correctamente fuera de alcance):**
+- Integrar calculadora dentro de `CotizacionesMain.jsx` (fase aparte).
+- Cambiar motor de cálculo de `calcularCosto`.
+- Alertas de stock del almacén.
+- Traducciones es/en/zh.
+- Tocar cualquier otro módulo.
+
+**Decisiones:**
+- Idempotencia en `saveTiempos` (DELETE antes de INSERT) considerada estrictamente necesaria para que la calculadora sea usable (recalcular no duplica). Documentado aquí como propuesta de cambio de contrato menor, sin alterar cálculo.
+- Calculadora siempre con `calculo_libre` + timestamp, no requiere cotización existente. Nuevo cálculo = nuevo ID.
+- Formato moneda viene de config, con fallback a `$`.
+
+**Dudas:** ninguna bloqueante. ¿Se quiere que `trabajo_materiales` tenga borrado físico de líneas de un cálculo libre? Hoy solo se crea nuevo ID en "Nuevo cálculo", dejando histórico huérfano pero inofensivo. Si se quiere limpieza, agregar handler `deleteConsumo` o `clearConsumo` en fase futura.
+
+**Siguiente:** E4 — integrar Costeo en Cotizaciones o definir siguiente fase según REPORTE_EJECUTIVO.
 
 ---
 
