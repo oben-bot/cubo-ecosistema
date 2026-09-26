@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Catálogo - El Cubo</title>
+<link rel="stylesheet" href="/estilos.css"/>
+</head>
+<body>
+<header>
+<h1>Catálogo El Cubo (E5/E6)</h1>
+<div id="estado"></div>
+</header>
+<main>
+<section>
+<h2>Productos publicados (público)</h2>
+<div id="productos"></div>
+</section>
+<section>
+<h2>Publicar producto (Cubo Manager -> Catálogo)</h2>
+<form id="form-producto">
+<input name="nombre" placeholder="Nombre" required/>
+<input name="descripcion" placeholder="Descripción"/>
+<input name="categoria" placeholder="Categoría"/>
+<input name="precio" type="number" step="0.01" placeholder="Precio" required/>
+<select name="tipo_venta"><option value="fisico">Físico</option><option value="digital">Digital</option></select>
+<input name="activo_id" placeholder="activo_id de Biblioteca (opcional)"/>
+<button type="submit">Publicar</button>
+</form>
+</section>
+<section>
+<h2>Ventas / Entregas (E6)</h2>
+<form id="form-venta">
+<input name="producto_id" placeholder="producto_id"/>
+<input name="cliente_nombre" placeholder="Cliente nombre" required/>
+<input name="cliente_email" placeholder="Cliente email" required/>
+<select name="tipo_pago"><option value="paypal">PayPal</option><option value="cuenta">Cuenta</option></select>
+<select name="ubicacion"><option value="nube">Nube (auto)</option><option value="pc">PC (requiere encendida)</option></select>
+<select name="confirmacion"><option value="automatica">Automática</option><option value="manual">Manual</option></select>
+<button type="submit">Vender / Crear entrega</button>
+</form>
+<div id="entregas"></div>
+</section>
+</main>
+<script src="/app.js"></script>
+</body>
+</html>

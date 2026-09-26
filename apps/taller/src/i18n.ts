@@ -1,0 +1,195 @@
+import type { Idioma } from './config.ts';
+
+export type Diccionario = Record<string, string>;
+
+const ES: Diccionario = {
+  'error.config_valor_invalido': 'La variable {variable} debe ser un entero entre {minimo} y {maximo}.',
+  'error.config_opciones_invalidas': 'La variable {variable} debe ser uno de estos valores: {opciones}.',
+  'error.marca_invalida': 'No se pudo leer el archivo de marca en {ruta}: {detalle}',
+  'error.marca_no_es_objeto': 'El archivo de marca en {ruta} no es un objeto JSON.',
+
+  'error.no_autorizado': 'Falta la llave local X-Cubo-Key o no es valida.',
+  'error.ruta_no_encontrada': 'La ruta solicitada no existe.',
+  'error.metodo_no_permitido': 'El metodo HTTP no esta permitido en esta ruta.',
+  'error.cuerpo_invalido': 'El cuerpo de la peticion no es JSON valido.',
+  'error.payload_demasiado_grande': 'La subida supera el tamano maximo permitido.',
+  'error.tipo_contenido_no_admitido': 'El tipo de contenido no esta admitido en esta ruta.',
+  'error.parametro_invalido': 'El parametro {parametro} no es valido.',
+  'error.servidor': 'Error interno del servicio.',
+  'salud.estado': 'ok',
+
+  'error.texto_obligatorio': 'El campo texto es obligatorio.',
+  'error.texto_demasiado_largo': 'El texto supera el maximo de {maximo} caracteres.',
+  'error.texto_vacio': 'El texto no puede estar vacio.',
+  'error.tipografia_obligatoria': 'La tipografia es obligatoria.',
+  'error.tipografia_no_existe': 'La tipografia {tipografia} no existe.',
+  'error.tamano_invalido': 'El tamano debe ser un numero positivo entre {min} y {max} mm.',
+  'error.bandeja_no_existe': 'No existe el elemento de bandeja {id}.',
+  'error.bandeja_archivo_no_encontrado': 'El archivo temporal de la bandeja no se encontro.',
+  'error.biblioteca_no_disponible': 'No se pudo conectar con la Biblioteca en {url}. ¿Esta corriendo? (apps/biblioteca -> npm start). Detalle: {detalle}',
+  'error.biblioteca_respuesta_invalida': 'La Biblioteca respondio con un error ({codigo}): {mensaje}',
+  'error.generacion_fallo': 'No se pudo generar el diseno: {detalle}',
+  'error.archivo_invalido': 'El archivo enviado no es valido.',
+  'error.formato_no_admitido': 'El formato {formato} no esta admitido.',
+  'error.medidas_invalidas': 'Las medidas deben ser numeros positivos en milimetros.',
+
+  // UI
+  'ui.titulo': 'Taller',
+  'ui.subtitulo': 'Constructores parametricos y bandeja temporal',
+  'ui.bandeja': 'Bandeja',
+  'ui.bandeja_vacia': 'La bandeja esta vacia. Genera un diseno con el constructor de texto.',
+  'ui.constructor_texto': 'Constructor de texto',
+  'ui.texto': 'Texto',
+  'ui.texto_placeholder': 'Escribe una palabra, por ejemplo HOLA',
+  'ui.tipografia': 'Tipografia',
+  'ui.tamano_mm': 'Tamano (mm) - altura',
+  'ui.generar': 'Generar',
+  'ui.generando': 'Generando...',
+  'ui.preview': 'Vista previa',
+  'ui.medidas': 'Medidas',
+  'ui.largo_corte': 'Largo de corte',
+  'ui.area': 'Area',
+  'ui.guardar_produccion': 'Guardar en produccion',
+  'ui.descartar': 'Descartar',
+  'ui.guardando': 'Guardando...',
+  'ui.descartando': 'Descartando...',
+  'ui.guardado_ok': 'Guardado en Biblioteca.',
+  'ui.descartado_ok': 'Descartado.',
+  'ui.error_generacion': 'Error al generar',
+  'ui.idioma': 'Idioma',
+  'ui.pie': 'Servicio local del Taller',
+  'ui.ancho': 'Ancho',
+  'ui.alto': 'Alto',
+  'ui.receta': 'Receta',
+  'ui.constructor': 'Constructor',
+  'ui.formato': 'Formato',
+  'ui.creado': 'Creado',
+  'ui.acciones': 'Acciones',
+  'ui.sin_preview': 'Sin vista previa',
+  'ui.cargando': 'Cargando...',
+  'ui.error_carga': 'No se pudo cargar la informacion.',
+};
+
+const EN: Diccionario = {
+  'error.config_valor_invalido': 'Variable {variable} must be an integer between {minimo} and {maximo}.',
+  'error.config_opciones_invalidas': 'Variable {variable} must be one of: {opciones}.',
+  'error.marca_invalida': 'Could not read the brand file at {ruta}: {detalle}',
+  'error.marca_no_es_objeto': 'The brand file at {ruta} is not a JSON object.',
+
+  'error.no_autorizado': 'Missing or invalid local key X-Cubo-Key.',
+  'error.ruta_no_encontrada': 'The requested path does not exist.',
+  'error.metodo_no_permitido': 'HTTP method not allowed on this path.',
+  'error.cuerpo_invalido': 'The request body is not valid JSON.',
+  'error.payload_demasiado_grande': 'The upload exceeds the maximum allowed size.',
+  'error.tipo_contenido_no_admitido': 'The content type is not allowed on this path.',
+  'error.parametro_invalido': 'Parameter {parametro} is not valid.',
+  'error.servidor': 'Internal service error.',
+  'salud.estado': 'ok',
+
+  'error.texto_obligatorio': 'Field texto is required.',
+  'error.texto_demasiado_largo': 'Text exceeds maximum of {maximo} characters.',
+  'error.texto_vacio': 'Text cannot be empty.',
+  'error.tipografia_obligatoria': 'Typography is required.',
+  'error.tipografia_no_existe': 'Typography {tipografia} does not exist.',
+  'error.tamano_invalido': 'Size must be a positive number between {min} and {max} mm.',
+  'error.bandeja_no_existe': 'Bandeja item {id} does not exist.',
+  'error.bandeja_archivo_no_encontrado': 'Temporary bandeja file not found.',
+  'error.biblioteca_no_disponible': 'Could not connect to Biblioteca at {url}. Is it running? (apps/biblioteca -> npm start). Detail: {detalle}',
+  'error.biblioteca_respuesta_invalida': 'Biblioteca responded with error ({codigo}): {mensaje}',
+  'error.generacion_fallo': 'Could not generate design: {detalle}',
+  'error.archivo_invalido': 'Uploaded file is not valid.',
+  'error.formato_no_admitido': 'Format {formato} is not allowed.',
+  'error.medidas_invalidas': 'Measurements must be positive numbers in millimeters.',
+
+  'ui.titulo': 'Workshop',
+  'ui.subtitulo': 'Parametric builders and temporary tray',
+  'ui.bandeja': 'Tray',
+  'ui.bandeja_vacia': 'Tray is empty. Generate a design with the text builder.',
+  'ui.constructor_texto': 'Text builder',
+  'ui.texto': 'Text',
+  'ui.texto_placeholder': 'Type a word, e.g. HOLA',
+  'ui.tipografia': 'Typography',
+  'ui.tamano_mm': 'Size (mm) - height',
+  'ui.generar': 'Generate',
+  'ui.generando': 'Generating...',
+  'ui.preview': 'Preview',
+  'ui.medidas': 'Measurements',
+  'ui.largo_corte': 'Cut length',
+  'ui.area': 'Area',
+  'ui.guardar_produccion': 'Save to production',
+  'ui.descartar': 'Discard',
+  'ui.guardando': 'Saving...',
+  'ui.descartando': 'Discarding...',
+  'ui.guardado_ok': 'Saved to Library.',
+  'ui.descartado_ok': 'Discarded.',
+  'ui.error_generacion': 'Generation error',
+  'ui.idioma': 'Language',
+  'ui.pie': 'Local Workshop service',
+  'ui.ancho': 'Width',
+  'ui.alto': 'Height',
+  'ui.receta': 'Recipe',
+  'ui.constructor': 'Builder',
+  'ui.formato': 'Format',
+  'ui.creado': 'Created',
+  'ui.acciones': 'Actions',
+  'ui.sin_preview': 'No preview',
+  'ui.cargando': 'Loading...',
+  'ui.error_carga': 'Could not load information.',
+};
+
+const ZH: Diccionario = {
+  'ui.titulo': '车间',
+  'ui.subtitulo': '参数化构造器和临时托盘',
+  'ui.bandeja': '托盘',
+  'ui.bandeja_vacia': '托盘为空。使用文本构造器生成设计。',
+  'ui.constructor_texto': '文本构造器',
+  'ui.texto': '文本',
+  'ui.texto_placeholder': '输入一个词，例如 HOLA',
+  'ui.tipografia': '字体',
+  'ui.tamano_mm': '尺寸（毫米）- 高度',
+  'ui.generar': '生成',
+  'ui.generando': '生成中...',
+  'ui.preview': '预览',
+  'ui.medidas': '尺寸',
+  'ui.largo_corte': '切割长度',
+  'ui.area': '面积',
+  'ui.guardar_produccion': '保存到生产',
+  'ui.descartar': '丢弃',
+  'ui.guardando': '保存中...',
+  'ui.descartando': '丢弃中...',
+  'ui.guardado_ok': '已保存到素材库。',
+  'ui.descartado_ok': '已丢弃。',
+  'ui.error_generacion': '生成错误',
+  'ui.idioma': '语言',
+  'ui.pie': '本地车间服务',
+  'ui.ancho': '宽度',
+  'ui.alto': '高度',
+  'ui.receta': '配方',
+  'ui.constructor': '构造器',
+  'ui.formato': '格式',
+  'ui.creado': '创建时间',
+  'ui.acciones': '操作',
+  'ui.sin_preview': '无预览',
+  'ui.cargando': '加载中...',
+  'ui.error_carga': '无法加载信息。',
+  'error.no_autorizado': '缺少本地密钥 X-Cubo-Key 或密钥无效。',
+};
+
+export const DICCIONARIOS: Record<Idioma, Diccionario> = { es: ES, en: EN, zh: ZH };
+
+export function diccionarioDe(idioma: Idioma): Diccionario {
+  return DICCIONARIOS[idioma] ?? ES;
+}
+
+export function traducir(idioma: Idioma, clave: string, variables?: Record<string, string | number | undefined>): string {
+  const bruto = diccionarioDe(idioma)[clave] ?? ES[clave] ?? clave;
+  if (!variables) return bruto;
+  return bruto.replace(/\{(\w+)\}/g, (coincidencia, nombre: string) => {
+    const valor = variables[nombre];
+    return valor === undefined ? coincidencia : String(valor);
+  });
+}
+
+export function clavesBase(): string[] {
+  return Object.keys(ES);
+}

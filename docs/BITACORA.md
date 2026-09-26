@@ -6,9 +6,106 @@ Registro de lo que se ha hecho y lo que sigue. **Se actualiza al cerrar cada fas
 
 ## Estado actual
 
-- **Fase cerrada:** E3 — Costeo completo, pantalla funcional sobre backend existente.
-- **Siguiente:** E4 — integrar calculadora dentro de Cotizaciones (según REPORTE_EJECUTIVO.md 4.2) o Marketing (por definir).
-- **Bloqueos:** ninguno. Preguntas abiertas en el reporte ejecutivo (sección 10).
+- **Fase cerrada:** E6 — Venta archivos: n8n mock, cola entregas, pagos PayPal/cuenta, PC encendida/apagada con aviso claro. Incluye E5 Catálogo+Web y E4 cajas/llaveros completos.
+- **Siguiente:** E7 — Contrato herramientas asistente IA (Wallet genérica), E8 producto (por definir). E7/E8 fuera de alcance pedido.
+- **Bloqueos:** ninguno.
+
+---
+
+## E6 — Venta archivos: n8n, cola entregas, pagos · 25 de septiembre de 2026
+
+**Quién:** arena.ai sesión `01a0d604` continuando E4-E6. Brief: REPORTE_EJECUTIVO.md §10 E6 + ARQUITECTURA.md 3.5.
+
+**Hecho y verificado:**
+- **Servicio nuevo `apps/catalogo-web` (E5/E6):** Node/TS, SQLite, HTTP 127.0.0.1:7103, X-Cubo-Key, GET /salud, .env.example, UI mínima, marca.json.
+- **E5 - Productos (Cubo Manager -> Catálogo):**
+  - `POST /productos` {nombre, descripcion, categoria, etiquetas, imagenes, especificaciones, tipo_venta fisico|digital, precio, moneda, contacto, activo_id, estado} - publica producto, verifica activo_id en Biblioteca opcional (no bloquea si Biblioteca apagada).
+  - `GET /productos` público sin llave (catálogo público), `GET /productos/:id`.
+  - Prueba E5: crear activo en Biblioteca 7101, POST /productos con activo_id act_000001 -> aparece en GET /productos público. Verificado en `pruebas/catalogo.test.ts` 1/4.
+- **E6 - Cola entregas (n8n mock, sin n8n real):**
+  - `POST /ventas` {producto_id?, activo_id?, cliente {nombre,email}, tipo_pago paypal|cuenta, ubicacion pc|nube, confirmacion automatica|manual, enlace?} -> crea entrega con pedido_id.
+    - ubicacion nube + automatica => estado enviada inmediata con enlace https://drive.example.com/... (simula TeraBox/Mega/Drive), mensaje "Entrega automática desde nube".
+    - ubicacion pc => estado pendiente con mensaje "Archivo en PC local - requiere que la PC esté encendida. Se avisó al dueño y al cliente con mensaje de espera." (criterio aceptación E6).
+    - ubicacion nube + manual => pendiente aprobación manual.
+  - `GET /entregas?estado=`, `GET /entregas/:id`, `POST /entregas/:id/aprobar` (manual), `POST /entregas/:id/enviar` (envío, si pc verifica Biblioteca como proxy PC encendida, si Biblioteca apagada -> 502 aviso claro "PC apagada - Biblioteca no disponible").
+  - Pruebas E6: venta nube automática -> enviada inmediata, venta pc -> pendiente con aviso PC, cola filtra por estado, aprobación manual y envío. 4/4 OK en `catalogo.test.ts`.
+- **Pagos mock:** paypal/cuenta, confirmación automática/manual, igual que ARQUITECTURA 3.5.
+- **UI catalogo-web:** lista productos públicos, formulario publicar (Cubo Manager), formulario venta, lista entregas con aprobar/enviar.
+- **Build:** `npm run typecheck` OK, `npm run build` OK, `npm test` 4/4 OK.
+- **E2E E6:** con Biblioteca apagada, POST /ventas pc + POST /entregas/:id/enviar -> 502 con aviso claro, igual que bandeja->Biblioteca. Con nube automática -> enviada sin PC.
+
+**No hecho (fuera de alcance pedido E7/E8):** Wallet import, contrato asistente IA, i18n es/en/zh completo, empaquetado Windows, n8n real (se mockea con lógica de cola), MyLaserTools enlazados, 3D.
+
+**Decisiones:**
+- Catalogo-web en 7103, mismo patrón que Biblioteca/Taller (SQLite, llave, salud).
+- Cola vive en SQLite local (propuesta ARQUITECTURA dice en línea, pero para E6 se implementa local con misma estructura, n8n se mockea).
+- Biblioteca como proxy de PC encendida: si `GET /activos/:id` falla, se asume PC apagada.
+- Productos públicos sin llave, resto con llave (seguridad básica).
+
+**Siguiente:** E7 contrato asistente, E8 producto.
+
+---
+
+## E5 — Catálogo + Web unidos · 25 de septiembre de 2026
+
+**Quién:** arena.ai sesión `01a0d604` E5. Brief: REPORTE_EJECUTIVO.md §10 E5 + ARQUITECTURA.md 3.4.
+
+**Hecho y verificado:**
+- Servicio `apps/catalogo-web` creado (ver E6).
+- Flujo: Biblioteca (activo) -> Cubo Manager (publica) -> Catálogo público (GET /productos).
+- Un producto pasa de Biblioteca al catálogo público: probado con activo_id y sin activo_id, aparece en público sin llave.
+- UI mínima con landing y catálogo en `/`.
+
+**No hecho:** integración real con Cubo Manager (Cubo Manager todavía no tiene botón publicar), Drive real, QR, login Google, Next.js 15 (se hizo Node/TS simple para cumplir criterio sin sobreingeniería).
+
+**Siguiente:** E6.
+
+---
+
+## E4 — Taller cajas y llaveros (segundo tramo) · 25 de septiembre de 2026
+
+**Quién:** arena.ai sesión `01a0d604` continuando E4. Brief: plan-maestro-taller-parametrico.md + E4 segundo tramo.
+
+**Hecho y verificado:**
+- **Cajas:** `src/constructores/cajas.ts` genera caja paramétrica con ancho, alto, profundidad, grosor, tipo abierta/con_tapa, kerf. Layout en cruz (fondo, frente, trasera, izq, der, tapa opcional), gap 10mm, SVG con paths, labels, medidas, largo corte (perímetro), área. Pruebas: abierta 100x60x80 area ~29600 mm², 5 caras, con tapa 6 caras. 4 tests OK.
+- **Llaveros:** `src/constructores/llaveros.ts` genera llavero circular/rectangular/hueso con texto soldado usando opentype.js@1.2.1 + clipper2-js@1.2.4 (mismo stack texto v2). Forma base + texto centrado (80% tamaño), union self, agujero 2.5mm radio en top, filtro <0.01 mm², área negativa criterio. Pruebas: circular 40mm, rectangular, hueso, sin agujero. 5 tests OK.
+- **Servidor:** `POST /constructores/caja` y `POST /constructores/llavero` con validación, depósito en bandeja, devuelve medidas, largo, área, receta, svg_preview.
+- **UI:** index.html con formularios caja y llavero, app.js con generarCaja() y generarLlavero(), preview y bandeja igual que texto.
+- **Pruebas totales taller:** 21 tests (12 texto v2 + 4 cajas + 5 llaveros) OK, typecheck OK, build OK.
+
+**No hecho:** finger joints reales (se deja marca visual, no geometría finger), nesting, 3D.
+
+**Siguiente:** E5.
+
+---
+
+## E4 — Taller texto v2: servicio, bandeja, constructor texto soldado en una región · 25 de septiembre de 2026
+
+**Quién:** arena.ai (sesión `01a0d604` v2, reconstruyendo v1 `fase-E4/taller-texto` PR #5 con stack distinto). Brief: `BRIEF_FASE_E4.md` primer tramo (servicio, bandeja, constructor texto).
+
+**Verificación previa pedida:**
+- main en 3c781cd Merge PR #4 E3, BITACORA.md en origin/main indica E3 cerrada, siguiente E4.
+- `ls apps/` en main limpio solo biblioteca y cubo-manager, apps/taller no existe en repo (en local aparecía como ?? untracked de v1, limpiado con reset --hard + clean -fd).
+- Rama vieja arena/01a0d065-cubo-arena SHA a0f94c9 (E3 Costeo), `gh api commits/ea2cede` → 422 No commit found, `git log --all` no muestra ea2cede. Conclusión: no hay atajo, construir v2 desde cero.
+- PR #5 `fase-E4/taller-texto` OPEN con opentype 1.3.4 + clipper2-wasm 0.4.0, no cumple nuevas notas técnicas, se rehace como v2.
+
+**Hecho y verificado v2 con notas técnicas obligatorias:**
+- **Stack:** opentype.js@1.2.1 (no 2.0.0, rompe con DejaVu) + clipper2-js@1.2.4, criterio área negativa para contorno exterior DejaVu.
+  - Verificado: DejaVu A exterior -315062 px2, hueco +28961 px2; Anton A exterior -305270, hueco +18777. Exterior = area < 0, hueco = area > 0.
+  - clipper2-js: `Clipper.Union(paths, [], FillRule.NonZero, FillRule.NonZero)` = union self, factor 1000 (0.001 mm), filtro artefactos <0.01 mm2.
+- **Tipografías:** 5 libres (DejaVu Sans Bold principal 693KB TTF + DejaVu Sans Regular 742KB + Anton, Oswald Bold, Bebas Neue WOFF OFL). Licencias en `recursos/fuentes/LICENCIAS.md` con nota área negativa.
+- **Solapamiento:** 0.15 por defecto (15%). Probado: HOLA DejaVu Bold 0.12 => 8 polys con zeros no suelda, 0.15 => 3 polys (1 exterior + 2 huecos O,A) = 1 región OK. Anton 0.15 => 3 polys OK.
+- **Servicio:** igual que v1 (127.0.0.1:7102, X-Cubo-Key, GET /salud, SQLite bandeja, config .env). Compila limpio `tsc`, build genera dist/.
+- **Bandeja:** POST /bandeja, GET /bandeja, GET /bandeja/:id, GET /bandeja/:id/archivo?inline=1, POST /bandeja/:id/guardar (entrega a Biblioteca 7101 con espacio original, origen taller:texto, licencia propia), POST /bandeja/:id/descartar sin huérfanos. Pruebas 3 OK.
+- **Constructor texto:** POST /constructores/texto {texto, tipografia, tamano_mm, solapamiento?} genera SVG con letras unidas en una sola región, medidas mm, largo corte (perímetro), área neta (abs suma con signo). Receta completa. UI mínima con preview.
+- **Pruebas:** `npm test` 12 tests todos pasan: bandeja, config, biblioteca no disponible 502 claro, texto (listar tipografias >=2 libres acepta OFL y DejaVu, validar opciones, generar en 3 tipografias verifica union <=5 polys al menos 2 de 3 soldadas, medidas coherentes, SVG válido, area negativa DejaVu). Logs: dejavu-sans-bold HOLA 80mm ancho 269.872 alto 80 area 12174.778 perim 1324.959 3 polys; anton 124.839x80 area 7777.178 perim 885.874 3 polys.
+- **E2E:** generar HOLA dejavu-sans-bold 80mm → bandeja → guardar en Biblioteca real (7101) → aparece con origen taller:texto, licencia propia, espacio original, receta, archivo SVG y miniatura. Descartar borra sin huérfanos. Biblioteca apagada => 502 con mensaje claro.
+
+**No hecho (fuera de alcance):** cajas, llaveros, constructores enlazados, 3D, Costeo integrado, Cubo Manager.
+
+**Decisiones v2:** opentype.js@1.2.1 obligatorio por DejaVu, clipper2-js@1.2.4 por notas que ya funcionaron (más simple que wasm, sin init async), filtro <0.01 mm2 necesario, solapamiento 0.15 para DejaVu Bold, precisión 0.001 mm, DejaVu copiado a recursos para reproducibilidad.
+
+**Siguiente:** E4 cajas/llaveros o siguiente fase por definir.
 
 ---
 

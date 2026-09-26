@@ -35,3 +35,9 @@ Hallazgos de la revisión del 21 de septiembre de 2026. Marcar como resuelto al 
 - [ ] Decidir cuándo archivar o volver privados `app-cubo-madera` y `oben-bot` (hoy son públicos), una vez migrado todo aquí.
 - [ ] Repos sin relación con el proyecto: `studio`, dos plantillas de Netlify, `Jarvis`, `Kody-releases`, `mi-app-autoflowAI` (vacíos).
 - [ ] Revocar el token de administrador usado en la revisión.
+
+## Catálogo+Web (`apps/catalogo-web`) — E5/E6
+- [ ] Variables de entorno con prefijo `CATALOGO_` (`CATALOGO_BIBLIOTECA_URL`, `CATALOGO_BIBLIOTECA_LLAVE`), a diferencia de Biblioteca/Taller/Cubo Manager que usan `BIBLIOTECA_URL`/`BIBLIOTECA_KEY` sin prefijo. No es un bug, pero conviene unificar la convención antes de E8 (empaquetado), para que instalar el ecosistema completo no confunda.
+- [ ] n8n no está conectado de verdad: hoy `POST /ventas` recibe la confirmación directo (quien llame decide `confirmacion`); falta el flujo real de pago (PayPal/cuenta) y los avisos por WhatsApp/correo.
+- [ ] El enlace de descarga para archivos en la nube es de ejemplo (`drive.example.com`); falta conectar la nube real del dueño (TeraBox/Mega/Drive).
+- [ ] Confirmar el modo Google Drive real para el estado publicado del catálogo (hoy usa su base local).

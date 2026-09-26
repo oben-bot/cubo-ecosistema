@@ -1,138 +1,48 @@
-# Gestor de Catálogos Digitales
+# Catalogo + Web - E5/E6
 
-Una aplicación web moderna para crear y gestionar catálogos digitales de productos de forma fácil y profesional.
+**Fase E5:** Catalogo + Web unidos, flujo Biblioteca -> Catalogo publico.
+**Fase E6:** Venta archivos: n8n, cola entregas, pagos.
 
-## 🚀 Características
+Servicio Node/TypeScript, SQLite, HTTP 127.0.0.1:7103, X-Cubo-Key, GET /salud.
 
-- **Gestión de Catálogos**: Crea, visualiza y elimina catálogos digitales
-- **Productos Dinámicos**: Agrega y elimina productos con imágenes, descripciones y precios
-- **Vista Previa Profesional**: Diseño limpio y responsive para mostrar a clientes
-- **Código QR Automático**: Genera QR y links para compartir fácilmente
-- **Almacenamiento Local**: Datos guardados en localStorage (fácil migración a API)
-- **Animaciones Suaves**: Transiciones con Framer Motion
-- **Diseño Responsive**: Optimizado para todos los dispositivos
+## API
 
-## 🛠️ Tecnologías
+### Publico (sin llave)
+- `GET /productos` - lista publicados
+- `GET /productos/:id` - ficha
 
-- **Next.js 15** - Framework React
-- **TypeScript** - Tipado estático
-- **Tailwind CSS** - Estilos utilitarios
-- **Framer Motion** - Animaciones
-- **qrcode.react** - Generación de códigos QR
-- **Lucide React** - Iconos modernos
+### Con llave (Cubo Manager publica)
+- `POST /productos` - { nombre, descripcion, categoria, etiquetas, imagenes, especificaciones, tipo_venta fisico|digital, precio, moneda, contacto, activo_id, estado } -> publica producto. Si activo_id viene de Biblioteca, verifica opcional.
+- `GET /config-publica`
+- `GET /i18n/:idioma`
 
-## 📦 Instalación
+### Ventas / Entregas (E6)
+- `POST /ventas` - { producto_id?, activo_id?, cliente: {nombre,email}, tipo_pago paypal|cuenta, ubicacion pc|nube, confirmacion automatica|manual, enlace? } -> crea entrega en cola
+  - ubicacion nube + automatica => enviada inmediata con enlace drive.example.com
+  - ubicacion pc => pendiente, requiere PC encendida (verifica Biblioteca como proxy), mensaje de espera
+- `GET /entregas?estado=` - lista cola
+- `GET /entregas/:id`
+- `POST /entregas/:id/aprobar` - aprobacion manual
+- `POST /entregas/:id/enviar` - envio (si pc, verifica Biblioteca, si apagada 502 con aviso)
 
-1. Clona el repositorio:
-\`\`\`bash
-git clone <tu-repositorio>
-cd catalogo
-\`\`\`
+## E2E E5
+1. Levanta Biblioteca 7101, crea activo.
+2. Levanta Catalogo 7103.
+3. POST /productos con activo_id -> aparece en GET /productos publico.
 
-2. Instala las dependencias:
-\`\`\`bash
+## E2E E6
+1. POST /ventas con producto_id digital, ubicacion nube, automatica -> entrega enviada inmediata.
+2. POST /ventas con ubicacion pc -> pendiente con mensaje "PC apagada requiere encendida".
+3. Si Biblioteca apagada, POST /entregas/:id/enviar -> 502 aviso claro.
+4. Aprobar manual y enviar.
+
+## Instalacion
+```bash
+cd apps/catalogo-web
 npm install
-\`\`\`
+cp .env.example .env
+npm run build
+npm start # 7103
+```
 
-3. Ejecuta el servidor de desarrollo:
-\`\`\`bash
-npm run dev
-\`\`\`
-
-4. Abre [http://localhost:3000](http://localhost:3000) en tu navegador
-
-## 🎯 Uso
-
-### Crear un Catálogo
-
-1. Haz clic en "Nuevo Catálogo" en la página principal
-2. Completa la información básica:
-   - Nombre del catálogo
-   - Logo del negocio (opcional)
-   - Información breve del negocio
-3. Agrega productos:
-   - Nombre del producto
-   - Descripción
-   - Precio
-   - Imagen (opcional)
-4. Guarda el catálogo
-
-### Ver y Compartir
-
-1. En la lista de catálogos, haz clic en "Ver"
-2. Se genera automáticamente:
-   - Una página profesional con todos los productos
-   - Código QR para compartir
-   - Link directo para enviar a clientes
-3. Descarga el QR o copia el link para compartir
-
-### Gestionar Catálogos
-
-- **Ver**: Abre la vista pública del catálogo
-- **Eliminar**: Borra permanentemente el catálogo
-
-## 📁 Estructura del Proyecto
-
-\`\`\`
-src/
-├── app/                    # Páginas de Next.js
-│   ├── catalog/[id]/      # Vista pública del catálogo
-│   ├── create/            # Formulario de creación
-│   ├── layout.tsx         # Layout principal
-│   └── page.tsx           # Página de inicio
-├── components/            # Componentes reutilizables
-│   ├── CatalogForm.tsx    # Formulario de catálogo
-│   ├── CatalogList.tsx    # Lista de catálogos
-│   ├── ProductCard.tsx    # Tarjeta de producto
-│   └── QRGenerator.tsx    # Generador de QR
-├── hooks/                 # Custom hooks
-│   └── useCatalogs.ts     # Hook para gestión de catálogos
-└── types/                 # Definiciones de tipos
-    └── catalog.ts         # Tipos de catálogo y producto
-\`\`\`
-
-## 🔧 Personalización
-
-### Estilos
-Los estilos están en \`src/app/globals.css\` y utilizan Tailwind CSS. Puedes personalizar:
-- Colores de marca
-- Tipografías
-- Espaciados
-- Animaciones
-
-### Almacenamiento
-Actualmente usa localStorage. Para conectar a una API:
-1. Modifica \`src/hooks/useCatalogs.ts\`
-2. Reemplaza las operaciones de localStorage con llamadas a API
-3. Agrega manejo de estados de carga y error
-
-### Componentes
-Todos los componentes están modulares y pueden ser fácilmente personalizados o extendidos.
-
-## 🚀 Próximas Mejoras
-
-- [ ] Autenticación de usuarios
-- [ ] Base de datos persistente
-- [ ] Categorías de productos
-- [ ] Búsqueda y filtros
-- [ ] Temas personalizables
-- [ ] Exportar a PDF
-- [ ] Analytics de visualizaciones
-- [ ] Múltiples idiomas
-
-## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT.
-
-## 🤝 Contribuir
-
-Las contribuciones son bienvenidas. Por favor:
-1. Fork el proyecto
-2. Crea una rama para tu feature
-3. Commit tus cambios
-4. Push a la rama
-5. Abre un Pull Request
-
----
-
-**¡Listo para crear catálogos digitales profesionales!** 🎉# Catalogo
+UI en http://127.0.0.1:7103/

@@ -1,8 +1,8 @@
 {
-  "name": "@cubo/catalogo-web",
+  "name": "@cubo/taller",
   "version": "1.0.0",
   "private": true,
-  "description": "Catalogo + Web unidos del ecosistema Cubo: tienda publica y landing, con productos desde Biblioteca y cola de entregas para venta digital (E5/E6).",
+  "description": "Taller parametrico: servicio local (127.0.0.1) con bandeja temporal y constructores (texto, cajas, llaveros).",
   "license": "MIT",
   "type": "module",
   "engines": {
@@ -16,7 +16,10 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "node --disable-warning=ExperimentalWarning --test pruebas/*.test.ts"
   },
-  "dependencies": {},
+  "dependencies": {
+    "clipper2-js": "1.2.4",
+    "opentype.js": "1.2.1"
+  },
   "devDependencies": {
     "@types/node": "22.10.2",
     "typescript": "5.7.2"

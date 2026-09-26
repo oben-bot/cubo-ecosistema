@@ -1,0 +1,15 @@
+# Configuracion local real: nunca se versiona
+.env
+marca.json
+cubo.key
+
+# Datos del taller y bases SQLite
+datos/
+*.db
+*.db-wal
+*.db-shm
+
+# Build y dependencias
+node_modules/
+dist/
+cobertura/

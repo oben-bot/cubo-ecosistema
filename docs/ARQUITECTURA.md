@@ -76,31 +76,39 @@ Autenticación local: cabecera `X-Cubo-Key` con una llave por instalación, gene
 - Un constructor devuelve siempre: archivo (SVG/DXF/STL/3MF), medidas en mm, y la receta que permite regenerarlo. El Taller puede además devolver **largo de corte y área** para el Costeo.
 - Constructores **enlazados**: una carpeta vigilada detecta los archivos descargados y los deposita en la bandeja.
 
-### 3.4 Cubo Manager → Catálogo (publicar)
+### 3.4 Cubo Manager → Catálogo (publicar) — implementado en `apps/catalogo-web`, puerto 7103
 
-Cubo Manager sube al Catálogo un producto:
+`POST /productos` (requiere `X-Cubo-Key` del catálogo, es una acción del dueño): publica un producto. Puede traer `activo_id` para verificarlo contra la Biblioteca real, o quedar suelto.
 
 ```json
 { "id": "prod_0001", "nombre": "...", "descripcion": "...", "categoria": "...",
   "etiquetas": ["..."], "imagenes": ["ruta o url"], "especificaciones": { "material": "...", "medidas": "..." },
   "tipo_venta": "fisico | digital", "precio": 0, "moneda": "MXN",
-  "contacto": ["whatsapp", "messenger", "web"], "activo_id": "act_000123" }
+  "contacto": ["whatsapp", "messenger", "web"], "activo_id": "act_000123", "estado": "publicado" }
 ```
 
-El Catálogo guarda su estado publicado en el Drive del dueño (JSON), como hoy. Solo Cubo Manager publica.
+`GET /productos` es **público, sin llave** (es el catálogo que ven los clientes). El Catálogo guarda su estado publicado en el Drive del dueño (JSON), como está decidido; hoy en la implementación de E5 usa su propia base local, y el modo Drive queda para cuando se conecte de verdad la cuenta del dueño. Solo Cubo Manager publica.
 
-### 3.5 Cola de entregas (venta de archivos)
+Variables de entorno del servicio (nota: con prefijo `CATALOGO_`, a diferencia de Biblioteca/Taller que usan `BIBLIOTECA_URL`/`BIBLIOTECA_KEY` sin prefijo — inconsistencia menor, ver `DEUDA_TECNICA.md`): `CATALOGO_BIBLIOTECA_URL`, `CATALOGO_BIBLIOTECA_LLAVE`, `CATALOGO_LLAVE` (la llave admin del propio catálogo).
+
+### 3.5 Cola de entregas (venta de archivos) — implementado en `apps/catalogo-web`
+
+`POST /ventas` registra una venta y crea su entrega:
 
 ```json
-{ "id": "ent_0001", "pedido_id": "ped_0001", "cliente": { "nombre": "...", "email": "..." },
-  "activo_id": "act_000123", "ubicacion": "pc | nube", "enlace": null,
-  "confirmacion": "automatica | manual", "estado": "pendiente | aprobada | enviada | error" }
+{ "activo_id": "act_000123", "producto_id": "prod_0001",
+  "cliente": { "nombre": "...", "email": "..." },
+  "tipo_pago": "paypal | cuenta", "ubicacion": "pc | nube",
+  "confirmacion": "automatica | manual", "enlace": null }
 ```
 
-- La cola vive en un almacén **en línea** (lo elige n8n; a definir) para que exista con la PC apagada.
-- `ubicacion: "nube"` → n8n entrega el enlace directo.
-- `ubicacion: "pc"` → n8n avisa al dueño y al cliente; **Cubo Manager** lee la cola al encenderse, envía el archivo y marca `enviada`.
-- `confirmacion: "manual"` → no se envía hasta que el dueño apruebe.
+Devuelve una `entrega`: `{ id, pedido_id, activo_id, cliente_nombre, cliente_email, tipo_pago, ubicacion, enlace, confirmacion, estado: "pendiente | enviada | error", mensaje }`.
+
+- `ubicacion: "nube"` + `confirmacion: "automatica"` → se entrega de inmediato con un enlace (hoy un enlace de ejemplo; falta conectar la nube real del dueño — TeraBox/Mega/Drive).
+- `ubicacion: "pc"` → queda `pendiente`. **La disponibilidad de la Biblioteca (puerto 7101) se usa como señal de que la PC está encendida** (ambas corren en la misma máquina del dueño): `POST /entregas/:id/enviar` intenta verificar un activo en la Biblioteca; si no responde, devuelve **502** con un aviso claro y marca la entrega `error`; si responde, marca `enviada` con su enlace. Probado en vivo apagando y reencendiendo la Biblioteca real: el primer intento da 502, el segundo (con la Biblioteca arriba) da 200.
+- `confirmacion: "manual"` → `POST /entregas/:id/aprobar` antes de poder enviar.
+- `GET /entregas?estado=` lista y filtra la cola.
+- **n8n todavía no está conectado.** Hoy la confirmación de pago es la que manda el propio `POST /ventas` (quien sea que lo llame decide `confirmacion`); conectar n8n de verdad (recibir el pago, avisar por WhatsApp/correo) es trabajo futuro, no bloqueante para que la cola funcione.
 
 ### 3.6 Herramientas del asistente (API local de Cubo Manager)
 

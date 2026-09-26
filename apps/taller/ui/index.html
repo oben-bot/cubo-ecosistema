@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Taller</title>
+    <link rel="stylesheet" href="/estilos.css" />
+  </head>
+  <body>
+    <header class="cabecera">
+      <div class="marca">
+        <span id="marca-nombre" class="marca-nombre">Taller</span>
+        <span id="marca-subtitulo" class="marca-subtitulo" data-i18n="ui.subtitulo"></span>
+      </div>
+      <div class="acciones-cabecera">
+        <label class="campo-inline">
+          <span data-i18n="ui.idioma"></span>
+          <select id="selector-idioma">
+            <option value="es">es</option>
+            <option value="en">en</option>
+            <option value="zh">zh</option>
+          </select>
+        </label>
+        <span id="estado-biblioteca" class="estado-biblioteca"></span>
+      </div>
+    </header>
+
+    <main class="contenedor">
+      <section class="panel-constructor">
+        <h2 data-i18n="ui.constructor_texto"></h2>
+        <div class="formulario">
+          <label>
+            <span data-i18n="ui.texto"></span>
+            <input id="input-texto" type="text" maxlength="50" data-i18n-placeholder="ui.texto_placeholder" />
+          </label>
+          <label>
+            <span data-i18n="ui.tipografia"></span>
+            <select id="select-tipografia"></select>
+          </label>
+          <label>
+            <span data-i18n="ui.tamano_mm"></span>
+            <input id="input-tamano" type="number" min="5" max="1000" step="1" value="80" />
+          </label>
+          <button id="btn-generar" class="boton primario" data-i18n="ui.generar"></button>
+          <p id="msg-generar" class="aviso"></p>
+        </div>
+
+        <h2>Caja paramétrica (E4)</h2>
+        <div class="formulario" id="form-caja">
+          <label>Ancho mm <input id="caja-ancho" type="number" min="10" max="1000" value="100"/></label>
+          <label>Alto mm <input id="caja-alto" type="number" min="10" max="1000" value="60"/></label>
+          <label>Profundidad mm <input id="caja-prof" type="number" min="10" max="1000" value="80"/></label>
+          <label>Grosor mm <input id="caja-grosor" type="number" min="1" max="20" value="3"/></label>
+          <label>Tipo <select id="caja-tipo"><option value="abierta">Abierta</option><option value="con_tapa">Con tapa</option></select></label>
+          <button id="btn-generar-caja" class="boton primario">Generar caja</button>
+          <p id="msg-caja" class="aviso"></p>
+        </div>
+
+        <h2>Llavero (E4)</h2>
+        <div class="formulario" id="form-llavero">
+          <label>Texto <input id="llavero-texto" type="text" maxlength="20" value="CUBO"/></label>
+          <label>Forma <select id="llavero-forma"><option value="circular">Circular</option><option value="rectangular">Rectangular</option><option value="hueso">Hueso</option></select></label>
+          <label>Tamaño mm <input id="llavero-tam" type="number" min="15" max="150" value="40"/></label>
+          <button id="btn-generar-llavero" class="boton primario">Generar llavero</button>
+          <p id="msg-llavero" class="aviso"></p>
+        </div>
+
+        <div id="preview-area" class="preview-area oculto">
+          <h3 data-i18n="ui.preview"></h3>
+          <div id="preview-svg" class="preview-svg"></div>
+          <div class="medidas">
+            <span><strong data-i18n="ui.ancho"></strong>: <span id="medida-ancho">-</span> mm</span>
+            <span><strong data-i18n="ui.alto"></strong>: <span id="medida-alto">-</span> mm</span>
+            <span><strong data-i18n="ui.largo_corte"></strong>: <span id="medida-largo">-</span> mm</span>
+            <span><strong data-i18n="ui.area"></strong>: <span id="medida-area">-</span> mm²</span>
+          </div>
+          <p id="debug-info" class="ayuda"></p>
+        </div>
+      </section>
+
+      <section class="panel-bandeja">
+        <h2><span data-i18n="ui.bandeja"></span> (<span id="contador-bandeja">0</span>)</h2>
+        <div id="lista-bandeja" class="lista-bandeja"></div>
+        <p id="msg-bandeja-vacia" class="ayuda" data-i18n="ui.bandeja_vacia"></p>
+      </section>
+    </main>
+
+    <footer class="pie"><span data-i18n="ui.pie"></span> · <span id="pie-version"></span></footer>
+    <script src="/app.js"></script>
+  </body>
+</html>
